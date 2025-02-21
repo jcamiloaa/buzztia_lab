@@ -1,0 +1,56 @@
+{% extends "mfa/base_manage.html" %}
+
+{% load i18n %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Recovery Codes" %}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h3 class="card-title mb-0 d-flex align-items-center">
+              <span data-feather="key" class="align-text-bottom me-2"></span>
+              {% trans "Recovery Codes" %}
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="alert alert-warning">
+              <i data-feather="alert-triangle" class="me-2"></i>
+              {% trans "Keep these codes safe! They can be used to recover your account if you lose access to your authentication device." %}
+            </div>
+            <div class="bg-light p-3 rounded mb-4">
+              <code class="d-block mb-2">{{ codes|join:"</code><br /><code>" }}</code>
+            </div>
+            <div class="d-flex gap-2">
+              <a href="{% url 'mfa_download_recovery_codes' %}"
+                 class="btn btn-primary">
+                <i data-feather="download" class="me-1"></i>
+                {% trans "Download Codes" %}
+              </a>
+              <a href="{% url 'mfa_index' %}" class="btn btn-secondary">
+                <i data-feather="check" class="me-1"></i>
+                {% trans "I've saved these codes" %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,53 @@
+{% extends "index-admin.html" %}
+
+{% load i18n static allauth %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_list_webauthn' %}">{% trans "Security Keys" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Edit Security Key" %}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h3 class="card-title mb-0 d-flex align-items-center">
+              <span data-feather="edit" class="align-text-bottom me-2"></span>
+              {% trans "Edit Security Key" %}
+            </h3>
+          </div>
+          <div class="card-body">
+            {% url 'mfa_edit_webauthn' as action_url %}
+            {% element form form=form method="post" action=action_url %}
+            {% slot body %}
+            {% csrf_token %}
+            {% element fields form=form %}{% endelement %}
+          {% endslot %}
+          {% slot actions %}
+          {% element button id="mfa_webauthn_edit" type="submit" tags="primary" %}
+          <span data-feather="save" class="me-1"></span>
+          {% trans "Save" %}
+        {% endelement %}
+      {% endslot %}
+    {% endelement %}
+  </div>
+</div>
+</div>
+</div>
+</div>
+{% endblock content %}

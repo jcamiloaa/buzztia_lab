@@ -1,0 +1,65 @@
+{% extends "index-admin.html" %}
+
+{% load i18n static allauth %}
+
+{% block title %}
+  {% trans "Remove Security Key" %} | BuzztiaLab
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% trans "Remove Security Key" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_list_webauthn' %}">{% trans "Security Keys" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% trans "Remove Security Key" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+          <h5 class="mb-0">
+            <i class="ti ti-alert-triangle me-2"></i>
+            {% trans "Remove Security Key" %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="text-danger mb-4">
+            {% blocktranslate %}Are you sure you want to remove this security key?{% endblocktranslate %}
+          </p>
+          <form method="post"
+                action="{% url 'mfa_remove_webauthn' pk=authenticator.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">
+              <i class="ti ti-trash me-1"></i>
+              {% translate "Remove" %}
+            </button>
+            <a href="{% url 'mfa_list_webauthn' %}" class="btn btn-secondary">
+              <i class="ti ti-x me-1"></i>
+              {% translate "Cancel" %}
+            </a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

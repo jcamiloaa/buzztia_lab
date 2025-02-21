@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=buzztialab
+POSTGRES_USER=buzztia_user_db
+POSTGRES_PASSWORD=G7h!2kL9@pQz

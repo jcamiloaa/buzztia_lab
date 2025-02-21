@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  Welcome to Buzztialab
+{% endblock title %}
+{% block css %}
+  {{ block.super }}
+  <link href="{% static 'css/cover.css' %}" rel="stylesheet" />
+{% endblock css %}
+{% block bodyclass %}
+  d-flex h-100 text-center text-bg-dark
+{% endblock bodyclass %}
+{% block body %}
+  <div class="cover-page">
+    <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+      <header class="mb-auto">
+        <div>
+          <h3 class="float-md-start mb-0">Buzztialab</h3>
+        </div>
+      </header>
+      <main class="px-3">
+        <h1>Welcome to Buzztialab</h1>
+        <p class="lead">
+          Your centralized platform for project management and collaboration. Join us to transform your ideas into reality.
+        </p>
+        <p class="lead">
+          {% if not request.user.is_authenticated %}
+            <a href="{% url 'account_login' %}"
+               class="btn btn-lg btn-light fw-bold border-white bg-white">Join the Innovation Hub</a>
+          {% endif %}
+        </p>
+      </main>
+      <footer class="mt-auto text-white-50">
+        <p>
+          Created by <a href="https://buzztia.com/" class="text-white">Buzztia</a> - Making innovation happen.
+        </p>
+      </footer>
+    </div>
+  </div>
+  {% if request.user.is_authenticated %}
+    <script>
+      window.location.href = "{% url 'dashboard' %}";
+    </script>
+  {% endif %}
+{% endblock body %}

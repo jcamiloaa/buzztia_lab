@@ -1,0 +1,15 @@
+{% extends "base-auth.html" %}
+
+{% load i18n %}
+
+{% block title %}
+  {% translate "Verify Your Email Address" %} - {{ block.super }}
+{% endblock title %}
+{% block auth_header %}
+  <h1 class="h3 mb-3 fw-normal">{% translate "Verify Your Email Address" %}</h1>
+{% endblock auth_header %}
+{% block content %}
+  <div class="alert alert-info">
+    {% translate "We have sent an email to you for verification. Follow the link provided to finalize the signup process." %}
+  </div>
+{% endblock content %}

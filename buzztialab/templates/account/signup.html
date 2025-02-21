@@ -1,0 +1,32 @@
+{% extends "base-auth.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  {% translate "Sign Up" %} - {{ block.super }}
+{% endblock title %}
+{% block auth_header %}
+  <h1 class="h3 mb-3 fw-normal">{% translate "Sign Up" %}</h1>
+{% endblock auth_header %}
+{% block content %}
+  <form class="signup"
+        id="signup_form"
+        method="post"
+        action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    {% if redirect_field_value %}
+      <input type="hidden"
+             name="{{ redirect_field_name }}"
+             value="{{ redirect_field_value }}" />
+    {% endif %}
+    <button class="w-100 btn btn-primary" type="submit">{% translate "Sign Up" %}</button>
+  </form>
+  <div class="text-center mt-3">
+    <p>
+      {% translate "Already have an account?" %}
+      <a href="{{ login_url }}">{% translate "Sign In" %}</a>
+    </p>
+  </div>
+{% endblock content %}

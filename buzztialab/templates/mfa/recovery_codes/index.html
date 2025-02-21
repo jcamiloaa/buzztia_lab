@@ -1,0 +1,77 @@
+{% extends "index-admin.html" %}
+
+{% load i18n allauth static %}
+
+{% block title %}
+  {% trans "Recovery Codes" %} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% trans "Recovery Codes" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% trans "Recovery Codes" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="ti ti-shield me-2"></i>
+            {% translate "Recovery Codes" %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="mb-4">
+            {% blocktranslate count unused_count=unused_codes|length %}
+                        There is {{ unused_count }} out of {{ total_count }} recovery codes available.
+                    {% plural %}
+                        There are {{ unused_count }} out of {{ total_count }} recovery codes available.
+                    {% endblocktranslate %}
+          </p>
+          <div class="form-group mb-4">
+            <label class="form-label" for="recovery_codes">{% translate "Unused codes" %}</label>
+            <textarea class="form-control font-monospace" id="recovery_codes" rows="{{ unused_codes|length }}" readonly>{% for code in unused_codes %}{% if forloop.counter0 %}
+{% endif %}{{ code }}{% endfor %}</textarea>
+          </div>
+          {% if unused_codes %}
+            <a href="{% url 'mfa_download_recovery_codes' %}"
+               class="btn btn-primary">
+              <i class="ti ti-download me-1"></i>
+              {% translate "Download codes" %}
+            </a>
+          {% endif %}
+          <a href="{% url 'mfa_generate_recovery_codes' %}"
+             class="btn btn-light-primary">
+            <i class="ti ti-refresh me-1"></i>
+            {% translate "Generate new codes" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_css %}
+  <!-- Add any page specific CSS here -->
+{% endblock extra_css %}
+{% block extra_js %}
+  <!-- Add any page specific JS here -->
+{% endblock extra_js %}

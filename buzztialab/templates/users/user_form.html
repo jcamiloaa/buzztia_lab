@@ -1,0 +1,68 @@
+{% extends "index-admin.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}
+  {% translate "Update Profile" %} - Buzztialab
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% translate "Update Profile" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% translate "Update Profile" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">
+            <i class="ti ti-user me-2"></i>
+            {% translate "Update Profile" %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <img src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'assets/images/default-avatar.png' %}{% endif %}"
+                 alt="{% translate 'Profile Photo' %}"
+                 class="img-fluid rounded-circle profile-picture" />
+          </div>
+          <form class="form"
+                method="post"
+                action="{% url 'users:update' %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row justify-content-center">
+              <div class="col-md-8">
+                {{ form|crispy }}
+                <div class="text-center mt-4">
+                  <button type="submit" class="btn btn-primary">
+                    <i class="ti ti-device-floppy me-1"></i>
+                    {% translate "Update Profile" %}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

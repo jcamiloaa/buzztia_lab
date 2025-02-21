@@ -1,0 +1,60 @@
+{% extends "mfa/base_reauthenticate.html" %}
+
+{% load i18n %}
+{% load allauth %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <!-- Breadcrumb -->
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Confirm Password" %}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h3 class="card-title mb-0 d-flex align-items-center">
+              <span data-feather="lock" class="align-text-bottom me-2"></span>
+              {% trans "Confirm Your Password" %}
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <p class="text-muted mb-4">
+              <i data-feather="info" class="me-2"></i>
+              {% trans "Enter your password to continue" %}
+            </p>
+            <form method="post" action="{% url 'mfa_reauthenticate' %}">
+              {% csrf_token %}
+              {{ form|crispy }}
+              {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+              <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                  <i data-feather="check-circle" class="me-1"></i>
+                  {% trans "Confirm" %}
+                </button>
+                {% url 'account_reset_password' as reset_url %}
+                <a href="{{ reset_url }}" class="btn btn-link text-muted">
+                  <i data-feather="help-circle" class="me-1"></i>
+                  {% trans "Forgot your password?" %}
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

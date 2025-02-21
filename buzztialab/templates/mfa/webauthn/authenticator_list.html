@@ -1,0 +1,97 @@
+{% extends "index-admin.html" %}
+
+{% load i18n static allauth humanize %}
+
+{% block title %}
+  {% trans "Security Keys" %} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% trans "Security Keys" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% trans "Security Keys" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>{% trans "Security Keys" %}</h5>
+        </div>
+        <div class="card-body">
+          {% if authenticators|length == 0 %}
+            <p class="mb-4">{% trans "No security keys have been added." %}</p>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>{% translate "Key" %}</th>
+                    <th>{% translate "Usage" %}</th>
+                    <th class="text-end">{% translate "Actions" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for authenticator in authenticators %}
+                    <tr>
+                      <td>
+                        {{ authenticator }}
+                        {% if authenticator.wrap.is_passwordless is True %}
+                          <span class="badge bg-primary">{% translate "Passkey" %}</span>
+                        {% elif authenticator.wrap.is_passwordless is False %}
+                          <span class="badge bg-secondary">{% translate "Security key" %}</span>
+                        {% else %}
+                          <span class="badge bg-warning">{% translate "Unspecified" %}</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        {% blocktranslate with created_at=authenticator.created_at|date:"SHORT_DATE_FORMAT" %}Added on {{ created_at }}{% endblocktranslate %}.
+                        {% if authenticator.last_used_at %}
+                          {% blocktranslate with last_used=authenticator.last_used_at|naturaltime %}Last used {{ last_used }}{% endblocktranslate %}
+                        {% else %}
+                          {% trans "Not used." %}
+                        {% endif %}
+                      </td>
+                      <td class="text-end">
+                        <a href="{% url 'mfa_edit_webauthn' pk=authenticator.pk %}"
+                           class="btn btn-icon btn-primary">
+                          <i class="ti ti-edit"></i>
+                        </a>
+                        <a href="{% url 'mfa_remove_webauthn' pk=authenticator.pk %}"
+                           class="btn btn-icon btn-danger">
+                          <i class="ti ti-trash"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+          <a href="{% url 'mfa_add_webauthn' %}" class="btn btn-primary mt-3">
+            <i class="ti ti-plus me-1"></i>
+            {% translate "Add New Security Key" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

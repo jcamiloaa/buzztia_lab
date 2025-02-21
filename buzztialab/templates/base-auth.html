@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %}
+  Authentication - {{ block.super }}
+{% endblock title %}
+{% block bodyclass %}
+  min-vh-100 d-flex flex-column
+{% endblock bodyclass %}
+{% block body %}
+  <main class="flex-grow-1 d-flex align-items-center py-4 bg-body-tertiary">
+    <div class="container">
+      <div class="text-center mb-4">
+        <a href="{% url 'home' %}">
+          <img class="mb-4"
+               src="{% static 'assets/images/logo.png' %}"
+               alt="Logo"
+               height="57" />
+        </a>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+          <div class="card shadow-sm">
+            <div class="card-body p-4">
+              <div class="text-center mb-4">
+                {% block auth_header %}
+                {% endblock auth_header %}
+              </div>
+              {% include "includes_admin/toast_messages.html" %}
+              {% block content %}
+              {% endblock content %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  {% block modal %}
+  {% endblock modal %}
+  {% block inline_javascript %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function(toastEl) {
+          return new bootstrap.Toast(toastEl);
+        });
+        toastList.forEach(toast => toast.show());
+      });
+    </script>
+  {% endblock inline_javascript %}
+{% endblock body %}

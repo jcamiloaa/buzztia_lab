@@ -1,0 +1,76 @@
+{% extends "index-admin.html" %}
+
+{% load i18n static allauth %}
+
+{% block content %}
+  <div class="container-fluid py-4">
+    <div class="row mb-4">
+      <div class="col-12">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'mfa_index' %}">{% trans "Two-Factor Authentication" %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans "Create Passkey" %}</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-header bg-light py-3">
+            <h3 class="card-title mb-0 d-flex align-items-center">
+              <span data-feather="key" class="align-text-bottom me-2"></span>
+              {% trans "Create Passkey" %}
+            </h3>
+          </div>
+          <div class="card-body">
+            <p class="text-muted mb-4">
+              {% blocktranslate %}You are about to create a passkey for your account. As you can add additional keys later on, you can use a descriptive name to tell the keys apart.{% endblocktranslate %}
+            </p>
+            {% url 'mfa_signup_webauthn' as action_url %}
+            {% element form form=form method="post" action=action_url %}
+            {% slot body %}
+            {% csrf_token %}
+            {% element fields form=form %}{% endelement %}
+          {% endslot %}
+          {% slot actions %}
+          <div class="d-flex gap-2">
+            {% element button id="mfa_webauthn_signup" type="button" tags="primary" %}
+            <span data-feather="plus" class="me-1"></span>
+            {% trans "Create" %}
+          {% endelement %}
+          {% element button type="submit" form="logout-from-stage" tags="outline-secondary" %}
+          <span data-feather="x" class="me-1"></span>
+          {% translate "Cancel" %}
+        {% endelement %}
+      </div>
+    {% endslot %}
+  {% endelement %}
+  <form id="logout-from-stage"
+        method="post"
+        action="{% url 'account_logout' %}">
+    <input type="hidden" name="next" value="{% url 'account_login' %}" />
+    {% csrf_token %}
+  </form>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% include "mfa/webauthn/snippets/scripts.html" %}
+{{ js_data|json_script:"js_data" }}
+<script>
+  allauth.webauthn.forms.signupForm({
+    ids: {
+      signup: "mfa_webauthn_signup",
+      credential: "{{ form.credential.auto_id }}"
+    },
+    data: JSON.parse(document.getElementById('js_data').textContent)
+  })
+</script>
+{% endblock content %}

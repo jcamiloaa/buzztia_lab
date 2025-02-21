@@ -1,0 +1,26 @@
+{% extends "account/base_reauthenticate.html" %}
+
+{% load allauth %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block reauthenticate_content %}
+  <div class="row">
+    <div class="col-md-6">
+      {% url 'account_reauthenticate' as action_url %}
+      {% element form form=form method="POST" action=action_url %}
+      {% slot body %}
+      {% csrf_token %}
+      {{ form|crispy }}
+      {{ redirect_field }}
+    {% endslot %}
+    {% slot actions %}
+    {% element button type="submit" tags="primary" %}
+    <span data-feather="check" class="align-text-bottom me-1"></span>
+    {% trans "Confirm" %}
+  {% endelement %}
+{% endslot %}
+{% endelement %}
+</div>
+</div>
+{% endblock reauthenticate_content %}

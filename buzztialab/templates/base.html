@@ -1,0 +1,95 @@
+{% load static i18n %}
+
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <title>
+      {% block title %}
+        BuzztiaLab
+      {% endblock title %}
+    </title>
+    <!-- [Meta] -->
+    <meta charset="utf-8" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="description"
+          content="BuzztiaLab es una aplicación gratuita con funciones que benefician a vecinos" />
+    <meta name="author" content="jcamilo by buzztia" />
+    <!-- [Favicon] icon -->
+    <link rel="icon"
+          href="{% static 'assets/images/favicon.ico' %}"
+          type="image/x-icon" />
+    {% block css %}
+      <!-- [Page specific CSS] start -->
+      <link href="{% static 'assets/css/plugins/animate.min.css' %}"
+            rel="stylesheet"
+            type="text/css" />
+      <!-- [Google Font] Family -->
+      <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            id="main-font-link" />
+      <!-- [Icons] -->
+      <link rel="stylesheet"
+            href="{% static 'assets/fonts/tabler-icons.min.css' %}" />
+      <link rel="stylesheet" href="{% static 'assets/fonts/feather.css' %}" />
+      <link rel="stylesheet" href="{% static 'assets/fonts/fontawesome.css' %}" />
+      <link rel="stylesheet" href="{% static 'assets/fonts/material.css' %}" />
+      <!-- [Template CSS Files] -->
+      <link rel="stylesheet"
+            href="{% static 'assets/css/style.css' %}"
+            id="main-style-link" />
+      <link rel="stylesheet" href="{% static 'assets/css/style-preset.css' %}" />
+      <link rel="stylesheet" href="{% static 'assets/css/landing.css' %}" />
+    {% endblock css %}
+    {% block javascript %}
+      {% include "includes_admin/scripts.html" %}
+    {% endblock javascript %}
+  </head>
+  <body class="{% block bodyclass %}landing-page{% endblock bodyclass %}">
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+      <div class="loader-track">
+        <div class="loader-fill"></div>
+      </div>
+    </div>
+    <!-- [ Pre-loader ] End -->
+    {% block body %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+      {% block content %}
+      {% endblock content %}
+      {% include "includes/footer.html" %}
+    {% endblock body %}
+    {% block modal %}
+    {% endblock modal %}
+    <!-- Required Js -->
+    <script src="{% static 'assets/js/plugins/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/simplebar.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/bootstrap.min.js' %}"></script>
+    <script src="{% static 'assets/js/fonts/custom-font.js' %}"></script>
+    <script src="{% static 'assets/js/script.js' %}"></script>
+    <script src="{% static 'assets/js/theme.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/feather.min.js' %}"></script>
+    <script>
+      layout_change('light');
+      font_change('Roboto');
+      change_box_container('false');
+      layout_caption_change('true');
+      layout_rtl_change('false');
+      preset_change('preset-1');
+    </script>
+    {% block inline_javascript %}
+    {% endblock inline_javascript %}
+  </body>
+</html>

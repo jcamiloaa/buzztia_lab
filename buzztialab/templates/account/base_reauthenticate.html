@@ -1,0 +1,57 @@
+{% extends "index-admin.html" %}
+
+{% load allauth %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Confirm Access" %} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% trans "Confirm Access" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% trans "Confirm Access" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12 col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h5>
+            <i class="ti ti-shield me-2"></i>
+            {% trans "Confirm Access" %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <p class="mb-4">{% blocktranslate %}Please reauthenticate to safeguard your account.{% endblocktranslate %}</p>
+          {% block reauthenticate_content %}
+          {% endblock reauthenticate_content %}
+          {% if reauthentication_alternatives %}
+            <hr class="my-4" />
+            <h5 class="mb-3">{% translate "Alternative options" %}</h5>
+            <div class="d-flex gap-2">
+              {% for alt in reauthentication_alternatives %}
+                <a href="{{ alt.url }}" class="btn btn-outline-primary">{{ alt.description }}</a>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
