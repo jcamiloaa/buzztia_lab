@@ -1,22 +1,24 @@
+{% load static i18n %}
+
 <footer class="pc-footer">
   <div class="footer-wrapper container-fluid">
     <div class="row">
       <div class="col-sm-6 my-1">
         <p class="m-0">
-          Buzztia;  by Team
-          <a href="#" target="_blank">Jkamilo Lab</a>
+          {% translate "Buzztia;  by Team" %}
+          <a href="#" target="_blank">{% translate "Jkamilo Lab" %}</a>
         </p>
       </div>
       <div class="col-sm-6 ms-auto my-1">
         <ul class="list-inline footer-link mb-0 justify-content-sm-end d-flex">
           <li class="list-inline-item">
-            <a href="../index.html">Home</a>
+            <a href="../index.html">{% translate "Home" %}</a>
           </li>
           <li class="list-inline-item">
-            <a href="#" target="_blank">Documentation</a>
+            <a href="#" target="_blank">{% translate "Documentation" %}</a>
           </li>
           <li class="list-inline-item">
-            <a href="#" target="_blank">Support</a>
+            <a href="#" target="_blank">{% translate "Support" %}</a>
           </li>
         </ul>
       </div>

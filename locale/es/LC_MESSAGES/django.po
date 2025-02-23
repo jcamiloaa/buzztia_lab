@@ -1,0 +1,884 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-02-23 22:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+
+#: buzztialab/templates/account/base_reauthenticate.html:7
+#: buzztialab/templates/account/base_reauthenticate.html:15
+#: buzztialab/templates/account/base_reauthenticate.html:23
+#: buzztialab/templates/account/base_reauthenticate.html:37
+msgid "Confirm Access"
+msgstr "Confirmar Acceso"
+
+#: buzztialab/templates/account/base_reauthenticate.html:41
+msgid "Please reauthenticate to safeguard your account."
+msgstr "Por favor vuelva a autenticarse para proteger su cuenta."
+
+#: buzztialab/templates/account/base_reauthenticate.html:46
+#: buzztialab/templates/mfa/authenticate.html:39
+msgid "Alternative options"
+msgstr "Opciones Alternativas"
+
+#: buzztialab/templates/account/email.html:7
+#: buzztialab/templates/account/email.html:15
+#: buzztialab/templates/account/email.html:23
+#: buzztialab/templates/account/email.html:37
+msgid "Email Addresses"
+msgstr "Direcciones de Correo"
+
+#: buzztialab/templates/account/email.html:43
+msgid "The following email addresses are associated with your account:"
+msgstr "Las siguientes direcciones de correo están asociadas a su cuenta:"
+
+#: buzztialab/templates/account/email.html:50
+msgid "Email"
+msgstr "Correo"
+
+#: buzztialab/templates/account/email.html:51
+msgid "Status"
+msgstr "Estado"
+
+#: buzztialab/templates/account/email.html:52
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:49
+msgid "Actions"
+msgstr "Acciones"
+
+#: buzztialab/templates/account/email.html:72
+msgid "Verified"
+msgstr "Verificado"
+
+#: buzztialab/templates/account/email.html:74
+msgid "Unverified"
+msgstr "No Verificado"
+
+#: buzztialab/templates/account/email.html:77
+msgid "Primary"
+msgstr "Principal"
+
+#: buzztialab/templates/account/email.html:87
+msgid "Re-send Verification"
+msgstr "Reenviar Verificación"
+
+#: buzztialab/templates/account/email.html:95
+msgid "Make Primary"
+msgstr "Hacer Principal"
+
+#: buzztialab/templates/account/email.html:102
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:54
+msgid "Remove"
+msgstr "Eliminar"
+
+#: buzztialab/templates/account/email.html:118
+msgid "Add Email Address"
+msgstr "Agregar Dirección de Correo"
+
+#: buzztialab/templates/account/email.html:130
+msgid "Add Email"
+msgstr "Agregar Correo"
+
+#: buzztialab/templates/account/email.html:143
+msgid "Do you really want to remove the selected email address?"
+msgstr "¿Realmente desea eliminar la dirección de correo seleccionada?"
+
+#: buzztialab/templates/account/email_confirm.html:6
+#: buzztialab/templates/account/email_confirm.html:9
+msgid "Confirm Email Address"
+msgstr "Confirmar Dirección de Correo"
+
+#: buzztialab/templates/account/email_confirm.html:16
+#: buzztialab/templates/account/reauthenticate.html:20
+#: buzztialab/templates/mfa/reauthenticate.html:46
+msgid "Confirm"
+msgstr "Confirmar"
+
+#: buzztialab/templates/account/email_confirm.html:20
+msgid ""
+"This confirmation link has expired or is invalid. Please request a new "
+"confirmation email."
+msgstr ""
+"Este enlace de confirmación ha expirado o no es válido. Por favor solicite "
+"un nuevo correo de confirmación."
+
+#: buzztialab/templates/account/login.html:8
+#: buzztialab/templates/account/login.html:11
+#: buzztialab/templates/account/login.html:22
+#: buzztialab/templates/account/password_reset_from_key_done.html:14
+#: buzztialab/templates/account/signup.html:29
+#: buzztialab/templates/mfa/authenticate.html:8
+#: buzztialab/templates/mfa/authenticate.html:26
+msgid "Sign In"
+msgstr "Iniciar Sesión"
+
+#: buzztialab/templates/account/login.html:26
+msgid "Forgot Password?"
+msgstr "¿Olvidó su Contraseña?"
+
+#: buzztialab/templates/account/login.html:29
+msgid "Don't have an account?"
+msgstr "¿No tiene una cuenta?"
+
+#: buzztialab/templates/account/login.html:30
+#: buzztialab/templates/account/signup.html:7
+#: buzztialab/templates/account/signup.html:10
+#: buzztialab/templates/account/signup.html:24
+msgid "Sign Up"
+msgstr "Registrarse"
+
+#: buzztialab/templates/account/logout.html:6
+#: buzztialab/templates/account/logout.html:9
+#: buzztialab/templates/account/logout.html:20
+#: buzztialab/templates/includes_admin/header.html:153
+#: buzztialab/templates/includes_admin/signout_modal.html:22
+msgid "Sign Out"
+msgstr "Cerrar Sesión"
+
+#: buzztialab/templates/account/logout.html:12
+#: buzztialab/templates/includes_admin/signout_modal.html:17
+msgid "Are you sure you want to sign out?"
+msgstr "¿Está seguro que desea cerrar sesión?"
+
+#: buzztialab/templates/account/logout.html:23
+#: buzztialab/templates/includes_admin/signout_modal.html:19
+#: buzztialab/templates/mfa/activate_totp.html:56
+#: buzztialab/templates/mfa/authenticate.html:30
+#: buzztialab/templates/mfa/authenticate.html:46
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:58
+#: buzztialab/templates/mfa/webauthn/signup_form.html:49
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: buzztialab/templates/account/password_change.html:7
+#: buzztialab/templates/account/password_change.html:15
+#: buzztialab/templates/account/password_change.html:23
+#: buzztialab/templates/account/password_change.html:35
+#: buzztialab/templates/account/password_change.html:46
+#: buzztialab/templates/account/password_reset_from_key.html:7
+#: buzztialab/templates/account/password_reset_from_key.html:14
+#: buzztialab/templates/account/password_reset_from_key.html:27
+#: buzztialab/templates/account/password_reset_from_key_done.html:6
+#: buzztialab/templates/account/password_reset_from_key_done.html:9
+#: buzztialab/templates/includes_admin/sidebar.html:114
+msgid "Change Password"
+msgstr "Cambiar Contraseña"
+
+#: buzztialab/templates/account/password_reset.html:7
+#: buzztialab/templates/account/password_reset.html:10
+#: buzztialab/templates/account/password_reset_done.html:6
+#: buzztialab/templates/account/password_reset_done.html:9
+msgid "Password Reset"
+msgstr "Restablecer Contraseña"
+
+#: buzztialab/templates/account/password_reset.html:14
+msgid ""
+"Enter your email address below, and we'll send you an email allowing you to "
+"reset your password."
+msgstr ""
+"Ingrese su dirección de correo a continuación, y le enviaremos un correo "
+"para restablecer su contraseña."
+
+#: buzztialab/templates/account/password_reset.html:21
+msgid "Reset Password"
+msgstr "Restablecer Contraseña"
+
+#: buzztialab/templates/account/password_reset_done.html:13
+msgid ""
+"We have sent you an email. If you have not received it please check your "
+"spam folder."
+msgstr ""
+"Le hemos enviado un correo. Si no lo ha recibido, revise su carpeta de spam."
+
+#: buzztialab/templates/account/password_reset_from_key.html:12
+msgid "Bad Token"
+msgstr ""
+
+#: buzztialab/templates/account/password_reset_from_key.html:21
+msgid ""
+"The password reset link was invalid. Please request a new password reset."
+msgstr ""
+
+#: buzztialab/templates/account/password_reset_from_key_done.html:12
+msgid "Your password has been changed successfully."
+msgstr ""
+
+#: buzztialab/templates/account/password_reset_from_key_set_password.html:7
+#: buzztialab/templates/account/password_reset_from_key_set_password.html:10
+#: buzztialab/templates/account/password_reset_from_key_set_password.html:16
+msgid "Set Password"
+msgstr "Establecer Contraseña"
+
+#: buzztialab/templates/account/signup.html:28
+msgid "Already have an account?"
+msgstr "¿Ya tiene una cuenta?"
+
+#: buzztialab/templates/account/verification_sent.html:6
+#: buzztialab/templates/account/verification_sent.html:9
+msgid "Verify Your Email Address"
+msgstr "Verifique su Dirección de Correo"
+
+#: buzztialab/templates/account/verification_sent.html:13
+msgid ""
+"We have sent an email to you for verification. Follow the link provided to "
+"finalize the signup process."
+msgstr ""
+"Le hemos enviado un correo para verificación. Siga el enlace proporcionado "
+"para finalizar el proceso de registro."
+
+#: buzztialab/templates/includes_admin/footer.html:6
+msgid "Buzztia;  by Team"
+msgstr ""
+
+#: buzztialab/templates/includes_admin/footer.html:7
+msgid "Jkamilo Lab"
+msgstr ""
+
+#: buzztialab/templates/includes_admin/footer.html:13
+#: buzztialab/templates/includes_admin/sidebar.html:22
+msgid "Home"
+msgstr "Inicio"
+#: buzztialab/templates/includes_admin/footer.html:16
+msgid "Documentation"
+msgstr "Documentación"
+
+#: buzztialab/templates/includes_admin/footer.html:19
+msgid "Support"
+msgstr "Soporte"
+
+#: buzztialab/templates/includes_admin/header.html:40
+#: buzztialab/templates/includes_admin/header.html:48
+msgid "Search here. . ."
+msgstr "Buscar aquí. . ."
+
+#: buzztialab/templates/includes_admin/header.html:75
+#, fuzzy
+#| msgid "Actions"
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: buzztialab/templates/includes_admin/header.html:91
+msgid "Just now"
+msgstr "Justo ahora"
+
+#: buzztialab/templates/includes_admin/header.html:97
+#: buzztialab/templates/includes_admin/signout_modal.html:15
+msgid "Close"
+msgstr "Cerrar"
+
+#: buzztialab/templates/includes_admin/header.html:104
+msgid "No new notifications"
+msgstr "No hay nuevas notificaciones"
+
+#: buzztialab/templates/includes_admin/header.html:122
+#, fuzzy
+#| msgid "Profile Photo"
+msgid "Profile"
+msgstr "Perfil"
+
+#: buzztialab/templates/includes_admin/header.html:146
+#, fuzzy
+#| msgid "User Settings"
+msgid "Account Settings"
+msgstr "Configuración"
+
+#: buzztialab/templates/includes_admin/sidebar.html:26
+msgid "Elements"
+msgstr "Elementos"
+
+#: buzztialab/templates/includes_admin/sidebar.html:35
+msgid "Typography"
+msgstr "Tipografía"
+
+#: buzztialab/templates/includes_admin/sidebar.html:44
+msgid "Color"
+msgstr "Color"
+
+#: buzztialab/templates/includes_admin/sidebar.html:53
+msgid "Icons"
+msgstr "Iconos"
+
+#: buzztialab/templates/includes_admin/sidebar.html:62
+msgid "Modal"
+msgstr "Modal"
+
+#: buzztialab/templates/includes_admin/sidebar.html:71
+msgid "Dashboard"
+msgstr "Tablero"
+
+#: buzztialab/templates/includes_admin/sidebar.html:75
+msgid "User Configuration"
+msgstr "Configuración"
+
+#: buzztialab/templates/includes_admin/sidebar.html:81
+msgid "User Settings"
+msgstr "Configuración"
+
+#: buzztialab/templates/includes_admin/sidebar.html:90
+msgid "My Info"
+msgstr "Mi Información"
+
+#: buzztialab/templates/includes_admin/sidebar.html:98
+msgid "E-Mail"
+msgstr "Correo Electrónico"
+
+#: buzztialab/templates/includes_admin/sidebar.html:106
+msgid "MFA"
+msgstr "Autenticación de Dos Factores"
+
+#: buzztialab/templates/includes_admin/sidebar.html:120
+msgid "Other"
+msgstr "Otro"
+
+#: buzztialab/templates/includes_admin/sidebar.html:126
+msgid "Menu levels"
+msgstr "Niveles de Menú"
+
+#: buzztialab/templates/includes_admin/sidebar.html:131
+msgid "Level 2.1"
+msgstr "Nivel 2.1"
+
+#: buzztialab/templates/includes_admin/sidebar.html:135
+msgid "Level 2.2"
+msgstr "Nivel 2.2"
+
+#: buzztialab/templates/includes_admin/sidebar.html:140
+msgid "Level 3.1"
+msgstr "Nivel 3.1"
+
+#: buzztialab/templates/includes_admin/sidebar.html:143
+msgid "Level 3.2"
+msgstr "Nivel 3.2"
+
+#: buzztialab/templates/includes_admin/sidebar.html:147
+msgid "Level 3.3"
+msgstr "Nivel 3.3"
+
+#: buzztialab/templates/includes_admin/sidebar.html:152
+msgid "Level 4.1"
+msgstr "Nivel 4.1"
+
+#: buzztialab/templates/includes_admin/sidebar.html:155
+msgid "Level 4.2"
+msgstr "Nivel 4.2"
+
+#: buzztialab/templates/includes_admin/sidebar.html:165
+msgid "Explore full code"
+msgstr "Explorar código completo"
+
+#: buzztialab/templates/includes_admin/sidebar.html:166
+msgid "Buy now to get full access of code files"
+msgstr "Compre ahora para obtener acceso completo a los archivos de código"
+
+#: buzztialab/templates/includes_admin/sidebar.html:167
+msgid "Buy Now"
+msgstr "Comprar Ahora"
+
+#: buzztialab/templates/includes_admin/signout_modal.html:11
+msgid "Confirm Sign Out"
+msgstr "Confirmar Cierre de Sesión"
+
+#: buzztialab/templates/mfa/activate_totp.html:17
+#: buzztialab/templates/mfa/index.html:7 buzztialab/templates/mfa/index.html:15
+#: buzztialab/templates/mfa/index.html:23
+#: buzztialab/templates/mfa/reauthenticate.html:18
+#: buzztialab/templates/mfa/recovery_codes/generate.html:16
+#: buzztialab/templates/mfa/recovery_codes/index.html:23
+#: buzztialab/templates/mfa/totp/activate_form.html:23
+#: buzztialab/templates/mfa/totp/deactivate_form.html:20
+#: buzztialab/templates/mfa/webauthn/add_form.html:18
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:23
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:23
+#: buzztialab/templates/mfa/webauthn/edit_form.html:15
+#: buzztialab/templates/mfa/webauthn/signup_form.html:15
+msgid "Two-Factor Authentication"
+msgstr "Autenticación de Dos Factores"
+
+#: buzztialab/templates/mfa/activate_totp.html:19
+#: buzztialab/templates/mfa/activate_totp.html:30
+msgid "Set up Authenticator App"
+msgstr "Configurar Aplicación Autenticadora"
+
+#: buzztialab/templates/mfa/activate_totp.html:36
+msgid "1. Scan QR Code"
+msgstr "1. Escanear Código QR"
+
+#: buzztialab/templates/mfa/activate_totp.html:42
+msgid "Can't scan? Enter this code manually:"
+msgstr "¿No puede escanear? Ingrese este código manualmente:"
+
+#: buzztialab/templates/mfa/activate_totp.html:47
+msgid "2. Enter Verification Code"
+msgstr "2. Ingrese Código de Verificación"
+
+#: buzztialab/templates/mfa/activate_totp.html:54
+msgid "Verify and Activate"
+msgstr "Verificar y Activar"
+
+#: buzztialab/templates/mfa/authenticate.html:12
+msgid "Two-Factor Authentication 2"
+msgstr "Autenticación de Dos Factores 2"
+
+#: buzztialab/templates/mfa/authenticate.html:15
+msgid ""
+"Your account is protected by two-factor authentication. Please enter an "
+"authenticator code:"
+msgstr ""
+"Su cuenta está protegida por autenticación de dos factores. Por favor, "
+"ingrese un código de autenticador:"
+
+#: buzztialab/templates/mfa/authenticate.html:43
+#: buzztialab/templates/mfa/webauthn/reauthenticate.html:17
+msgid "Use a security key"
+msgstr "Utilice una llave de seguridad"
+
+#: buzztialab/templates/mfa/email/recovery_codes_generated_message.txt:4
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated."
+msgstr ""
+"Se ha generado un nuevo conjunto de códigos de recuperación para "
+"autenticación de dos factores."
+
+#: buzztialab/templates/mfa/email/recovery_codes_generated_subject.txt:3
+msgid "New Recovery Codes Generated"
+msgstr "Nuevos Códigos de Recuperación Generados"
+
+#: buzztialab/templates/mfa/email/totp_activated_message.txt:4
+#: buzztialab/templates/mfa/messages/totp_activated.txt:2
+msgid "Authenticator app activated."
+msgstr "Aplicación autenticadora activada."
+
+#: buzztialab/templates/mfa/email/totp_activated_subject.txt:3
+msgid "Authenticator App Activated"
+msgstr "Aplicación Autenticadora Activada"
+
+#: buzztialab/templates/mfa/email/totp_deactivated_message.txt:4
+#: buzztialab/templates/mfa/messages/totp_deactivated.txt:2
+msgid "Authenticator app deactivated."
+msgstr "Aplicación autenticadora desactivada."
+
+#: buzztialab/templates/mfa/email/totp_deactivated_subject.txt:3
+msgid "Authenticator App Deactivated"
+msgstr "Aplicación Autenticadora Desactivada"
+
+#: buzztialab/templates/mfa/email/webauthn_added_message.txt:4
+msgid "A new security key has been added."
+msgstr "Se ha agregado una nueva llave de seguridad."
+
+#: buzztialab/templates/mfa/email/webauthn_added_subject.txt:3
+msgid "Security Key Added"
+msgstr "Llave de Seguridad Agregada"
+
+#: buzztialab/templates/mfa/email/webauthn_removed_message.txt:4
+msgid "A security key has been removed."
+msgstr "Se ha eliminado una llave de seguridad."
+
+#: buzztialab/templates/mfa/email/webauthn_removed_subject.txt:3
+msgid "Security Key Removed"
+msgstr "Llave de Seguridad Eliminada"
+
+#: buzztialab/templates/mfa/index.html:36
+#: buzztialab/templates/mfa/totp/base.html:6
+msgid "Authenticator App"
+msgstr ""
+
+#: buzztialab/templates/mfa/index.html:42
+msgid "Authentication using an authenticator app is active."
+msgstr "La autenticación usando una aplicación autenticadora está activa."
+
+#: buzztialab/templates/mfa/index.html:47
+msgid "An authenticator app is not active."
+msgstr "Una aplicación autenticadora no está activa."
+
+#: buzztialab/templates/mfa/index.html:55
+#: buzztialab/templates/mfa/totp/deactivate_form.html:52
+msgid "Deactivate"
+msgstr "Desactivar"
+
+#: buzztialab/templates/mfa/index.html:60
+#: buzztialab/templates/mfa/totp/activate_form.html:62
+msgid "Activate"
+msgstr "Activar"
+
+#: buzztialab/templates/mfa/index.html:69
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:26
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:6
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:14
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:25
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:37
+#: buzztialab/templates/mfa/webauthn/base.html:6
+#: buzztialab/templates/mfa/webauthn/edit_form.html:18
+msgid "Security Keys"
+msgstr "Llaves de Seguridad"
+
+#: buzztialab/templates/mfa/index.html:75
+#, python-format
+msgid ""
+"\n"
+"                            You have added %(count)s security key.\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            You have added %(count)s security keys.\n"
+"                        "
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: buzztialab/templates/mfa/index.html:84
+msgid "Manage"
+msgstr "Gestionar"
+
+#: buzztialab/templates/mfa/index.html:89
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:41
+msgid "No security keys have been added."
+msgstr "No se han agregado llaves de seguridad."
+
+#: buzztialab/templates/mfa/index.html:94
+#: buzztialab/templates/mfa/webauthn/add_form.html:45
+msgid "Add"
+msgstr "Agregar"
+
+#: buzztialab/templates/mfa/index.html:104
+#: buzztialab/templates/mfa/recovery_codes/base.html:6
+#: buzztialab/templates/mfa/recovery_codes/generate.html:18
+#: buzztialab/templates/mfa/recovery_codes/generate.html:29
+#: buzztialab/templates/mfa/recovery_codes/index.html:6
+#: buzztialab/templates/mfa/recovery_codes/index.html:14
+#: buzztialab/templates/mfa/recovery_codes/index.html:25
+#: buzztialab/templates/mfa/recovery_codes/index.html:39
+msgid "Recovery Codes"
+msgstr "Códigos de Recuperación"
+
+#: buzztialab/templates/mfa/index.html:110
+#, fuzzy, python-format
+#| msgid ""
+#| "                            There is %(unused_count)s out of "
+#| "%(total_count)s recovery codes available.\n"
+#| msgid_plural ""
+#| "                            There are %(unused_count)s out of "
+#| "%(total_count)s recovery codes available.\n"
+msgid ""
+"\n"
+"                            There is %(unused_count)s out of %(total_count)s "
+"recovery codes available.\n"
+"                        "
+msgid_plural ""
+"\n"
+"                            There are %(unused_count)s out of "
+"%(total_count)s recovery codes available.\n"
+"                        "
+msgstr[0] ""
+"Hay %(unused_count)s de %(total_count)s código de recuperación disponible."
+msgstr[1] ""
+"Hay %(unused_count)s de %(total_count)s códigos de recuperación disponibles."
+
+#: buzztialab/templates/mfa/index.html:119
+msgid "No recovery codes set up."
+msgstr "No hay códigos de recuperación configurados."
+
+#: buzztialab/templates/mfa/index.html:128
+msgid "View"
+msgstr "Ver"
+
+#: buzztialab/templates/mfa/index.html:133
+msgid "Download"
+msgstr "Descargar"
+
+#: buzztialab/templates/mfa/index.html:139
+msgid "Generate"
+msgstr "Generar"
+
+#: buzztialab/templates/mfa/messages/recovery_codes_generated.txt:2
+msgid "A new set of recovery codes has been generated."
+msgstr "Se ha generado un nuevo conjunto de códigos de recuperación."
+
+#: buzztialab/templates/mfa/messages/webauthn_added.txt:2
+msgid "Security key added."
+msgstr "Llave de seguridad agregada."
+
+#: buzztialab/templates/mfa/messages/webauthn_removed.txt:2
+msgid "Security key removed."
+msgstr "Llave de seguridad eliminada."
+
+#: buzztialab/templates/mfa/reauthenticate.html:20
+msgid "Confirm Password"
+msgstr "Confirmar Contraseña"
+
+#: buzztialab/templates/mfa/reauthenticate.html:31
+msgid "Confirm Your Password"
+msgstr "Confirme su Contraseña"
+
+#: buzztialab/templates/mfa/reauthenticate.html:37
+msgid "Enter your password to continue"
+msgstr "Ingrese su contraseña para continuar"
+
+#: buzztialab/templates/mfa/reauthenticate.html:51
+msgid "Forgot your password?"
+msgstr "¿Olvidó su contraseña?"
+
+#: buzztialab/templates/mfa/recovery_codes/generate.html:35
+msgid ""
+"Keep these codes safe! They can be used to recover your account if you lose "
+"access to your authentication device."
+msgstr ""
+"¡Mantenga estos códigos a salvo! Pueden usarse para recuperar su cuenta si "
+"pierde el acceso a su dispositivo de autenticación."
+
+#: buzztialab/templates/mfa/recovery_codes/generate.html:44
+msgid "Download Codes"
+msgstr "Descargar Códigos"
+
+#: buzztialab/templates/mfa/recovery_codes/generate.html:48
+msgid "I've saved these codes"
+msgstr "He guardado estos códigos"
+
+#: buzztialab/templates/mfa/recovery_codes/index.html:44
+#, python-format
+msgid ""
+"\n"
+"                        There is %(unused_count)s out of %(total_count)s "
+"recovery codes available.\n"
+"                    "
+msgid_plural ""
+"\n"
+"                        There are %(unused_count)s out of %(total_count)s "
+"recovery codes available.\n"
+"                    "
+msgstr[0] ""
+msgstr[1] ""
+
+#: buzztialab/templates/mfa/recovery_codes/index.html:51
+msgid "Unused codes"
+msgstr "Códigos sin usar"
+
+#: buzztialab/templates/mfa/recovery_codes/index.html:59
+msgid "Download codes"
+msgstr "Descargar códigos"
+
+#: buzztialab/templates/mfa/recovery_codes/index.html:65
+msgid "Generate new codes"
+msgstr "Generar nuevos códigos"
+
+#: buzztialab/templates/mfa/totp/activate_form.html:6
+#: buzztialab/templates/mfa/totp/activate_form.html:14
+#: buzztialab/templates/mfa/totp/activate_form.html:25
+#: buzztialab/templates/mfa/totp/activate_form.html:37
+msgid "Activate Authenticator App"
+msgstr ""
+
+#: buzztialab/templates/mfa/totp/activate_form.html:42
+msgid ""
+"To protect your account with two-factor authentication, scan the QR code "
+"below with your authenticator app. Then, input the verification code "
+"generated by the app below."
+msgstr ""
+"Para proteger su cuenta con autenticación de dos factores, escanee el código "
+"QR a continuación con su aplicación autenticadora. Luego, ingrese el código "
+"de verificación generado por la aplicación."
+
+#: buzztialab/templates/mfa/totp/activate_form.html:53
+msgid "Authenticator secret"
+msgstr "Secreto del autenticador"
+
+#: buzztialab/templates/mfa/totp/activate_form.html:56
+msgid ""
+"You can store this secret and use it to reinstall your authenticator app at "
+"a later time."
+msgstr ""
+"Puede guardar este secreto y utilizarlo para reinstalar su aplicación "
+"autenticadora más adelante."
+
+#: buzztialab/templates/mfa/totp/deactivate_form.html:7
+#: buzztialab/templates/mfa/totp/deactivate_form.html:22
+#: buzztialab/templates/mfa/totp/deactivate_form.html:33
+msgid "Deactivate Authenticator App"
+msgstr "Desactivar Aplicación Autenticadora"
+
+#: buzztialab/templates/mfa/totp/deactivate_form.html:39
+msgid ""
+"You are about to deactivate authenticator app based authentication. Are you "
+"sure?"
+msgstr ""
+"Está a punto de desactivar la autenticación basada en una aplicación "
+"autenticadora. ¿Está seguro?"
+
+#: buzztialab/templates/mfa/webauthn/add_form.html:20
+#: buzztialab/templates/mfa/webauthn/add_form.html:31
+msgid "Add Security Key"
+msgstr "Agregar Llave de Seguridad"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:6
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:14
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:28
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:42
+msgid "Remove Security Key"
+msgstr "Eliminar Llave de Seguridad"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_confirm_delete.html:47
+msgid "Are you sure you want to remove this security key?"
+msgstr "¿Está seguro de que desea eliminar esta llave de seguridad?"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:47
+msgid "Key"
+msgstr "Llave"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:48
+msgid "Usage"
+msgstr "Uso"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:58
+msgid "Passkey"
+msgstr "Clave de Acceso"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:60
+msgid "Security key"
+msgstr "Llave de seguridad"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:62
+msgid "Unspecified"
+msgstr "No especificado"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:66
+#, python-format
+msgid "Added on %(created_at)s"
+msgstr "Agregado el %(created_at)s"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:68
+#, python-format
+msgid "Last used %(last_used)s"
+msgstr "Último uso %(last_used)s"
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:70
+msgid "Not used."
+msgstr "No usado."
+
+#: buzztialab/templates/mfa/webauthn/authenticator_list.html:91
+msgid "Add New Security Key"
+msgstr "Agregar Nueva Llave de Seguridad"
+
+#: buzztialab/templates/mfa/webauthn/edit_form.html:20
+#: buzztialab/templates/mfa/webauthn/edit_form.html:31
+msgid "Edit Security Key"
+msgstr "Editar Llave de Seguridad"
+
+#: buzztialab/templates/mfa/webauthn/edit_form.html:44
+msgid "Save"
+msgstr "Guardar"
+
+#: buzztialab/templates/mfa/webauthn/signup_form.html:17
+#: buzztialab/templates/mfa/webauthn/signup_form.html:28
+msgid "Create Passkey"
+msgstr "Crear Clave de Acceso"
+
+#: buzztialab/templates/mfa/webauthn/signup_form.html:33
+msgid ""
+"You are about to create a passkey for your account. As you can add "
+"additional keys later on, you can use a descriptive name to tell the keys "
+"apart."
+msgstr ""
+"Está a punto de crear una clave de acceso para su cuenta. Como puede agregar "
+"llaves adicionales más adelante, puede usar un nombre descriptivo para "
+"diferenciarlas."
+
+#: buzztialab/templates/mfa/webauthn/signup_form.html:45
+msgid "Create"
+msgstr "Crear"
+
+#: buzztialab/templates/mfa/webauthn/snippets/scripts.html:3
+msgid "This functionality requires JavaScript."
+msgstr "Esta funcionalidad requiere JavaScript."
+
+#: buzztialab/templates/users/user_form.html:8
+#: buzztialab/templates/users/user_form.html:16
+#: buzztialab/templates/users/user_form.html:24
+#: buzztialab/templates/users/user_form.html:38
+#: buzztialab/templates/users/user_form.html:58
+msgid "Update Profile"
+msgstr "Actualizar Perfil"
+
+#: buzztialab/templates/users/user_form.html:44
+msgid "Profile Photo"
+msgstr "Foto de Perfil"
+
+#: buzztialab/users/admin.py:24
+msgid "Personal info"
+msgstr "Información personal"
+
+#: buzztialab/users/admin.py:26
+msgid "Permissions"
+msgstr "Permisos"
+
+#: buzztialab/users/admin.py:38
+msgid "Important dates"
+msgstr "Fechas importantes"
+
+#: buzztialab/users/apps.py:9
+msgid "Users"
+msgstr "Usuarios"
+
+#: buzztialab/users/forms.py:27 buzztialab/users/tests/test_forms.py:35
+msgid "This email has already been taken."
+msgstr ""
+
+#: buzztialab/users/models.py:22
+msgid "User"
+msgstr "Usuario"
+
+#: buzztialab/users/models.py:23
+msgid "Staff"
+msgstr "Personal"
+
+#: buzztialab/users/models.py:24
+msgid "Admin"
+msgstr "Administrador"
+
+#: buzztialab/users/models.py:27
+msgid "Name of User"
+msgstr "Nombre de Usuario"
+
+#: buzztialab/users/models.py:30
+msgid "email address"
+msgstr "dirección de correo"
+
+#: buzztialab/users/models.py:33
+msgid "Profile Picture"
+msgstr "Foto de Perfil"
+
+#: buzztialab/users/models.py:39
+msgid "Role"
+msgstr "Rol"
+
+#: buzztialab/users/tests/test_views.py:72 buzztialab/users/views.py:15
+msgid "Information successfully updated"
+msgstr "Información actualizada exitosamente"
+
+#, python-format
+#~ msgid ""
+#~ "\n"
+#~ "There is %(unused_count)s out of %(total_count)s recovery codes "
+#~ "available.\n"
+#~ "                        "
+#~ msgid_plural ""
+#~ "\n"
+#~ "There are %(unused_count)s out of %(total_count)s recovery codes "
+#~ "available.\n"
+#~ "                        "
+#~ msgstr[0] ""
+#~ "Hay %(unused_count)s de %(total_count)s código de recuperación disponible."
+#~ msgstr[1] ""
+#~ "Hay %(unused_count)s de %(total_count)s códigos de recuperación "
+#~ "disponibles."

@@ -8,3 +8,39 @@
     height: 100%;
     object-fit: cover;
 }
+
+.pc-h-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    font-size: 0.75rem;
+    padding: 2px 5px;
+}
+
+.dropdown-notification {
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.header-notification-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-message {
+    word-break: break-word;
+    margin-bottom: 5px;
+}
+
+.btn-close-small {
+    padding: 0.25rem;
+    background: transparent;
+    border: 0;
+    font-size: 0.875rem;
+    opacity: 0.5;
+}
+
+.btn-close-small:hover {
+    opacity: 1;
+}

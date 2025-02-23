@@ -27,17 +27,6 @@
     <!-- [ Main Content ] start -->
     <div class="pc-container">
       <div class="pc-content">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-              {{ message }}
-              <button type="button"
-                      class="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
-            </div>
-          {% endfor %}
-        {% endif %}
         {% block breadcrumb %}
         {% endblock breadcrumb %}
         {% block content %}

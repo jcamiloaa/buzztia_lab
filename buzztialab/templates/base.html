@@ -56,17 +56,6 @@
     </div>
     <!-- [ Pre-loader ] End -->
     {% block body %}
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-            {{ message }}
-            <button type="button"
-                    class="btn-close"
-                    data-bs-dismiss="alert"
-                    aria-label="Close"></button>
-          </div>
-        {% endfor %}
-      {% endif %}
       {% block content %}
       {% endblock content %}
       {% include "includes/footer.html" %}

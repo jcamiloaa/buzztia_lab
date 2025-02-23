@@ -16,7 +16,7 @@
           <img class="mb-4"
                src="{% static 'assets/images/logo.png' %}"
                alt="Logo"
-               height="57" />
+               height="40" />
         </a>
       </div>
       <div class="row justify-content-center">
@@ -27,7 +27,6 @@
                 {% block auth_header %}
                 {% endblock auth_header %}
               </div>
-              {% include "includes_admin/toast_messages.html" %}
               {% block content %}
               {% endblock content %}
             </div>

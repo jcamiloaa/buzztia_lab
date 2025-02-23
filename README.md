@@ -93,3 +93,9 @@ The following details how to deploy this application.
 ### Docker
 
 See detailed [cookiecutter-django Docker documentation](https://cookiecutter-django.readthedocs.io/en/latest/3-deployment/deployment-with-docker.html).
+
+
+### Transalate Step
+
+docker compose -f docker-compose.local.yml run --rm django django-admin makemessages -l es
+docker compose -f docker-compose.local.yml run --rm django django-admin compilemessages
