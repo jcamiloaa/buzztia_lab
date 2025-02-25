@@ -16,6 +16,11 @@
     <meta name="author" content="jcamilo by buzztia" />
     <link rel="icon" href="{% static 'assets/images/favicon.ico' %}" />
     {% include "includes_admin/styles.html" %}
+    <!-- Custom fonts -->
+    <link rel="stylesheet"
+          href="{% static 'assets/fonts/tabler-icons.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
     {% block extra_css %}
     {% endblock extra_css %}
   </head>
@@ -188,6 +193,16 @@
     <!-- [ Main Content ] end -->
     {% include "includes_admin/footer.html" %}
     {% include "includes_admin/scripts.html" %}
+    <!-- Core JS -->
+    <script src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <!-- Icon fonts -->
+    <script src="{% static 'assets/js/feather.min.js' %}"></script>
+    <script src="{% static 'assets/js/tabler.min.js' %}"></script>
+    <!-- Custom JS -->
+    <script src="{% static 'assets/js/pcoded.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
+    <script src="{% static 'assets/js/menu-setting.min.js' %}"></script>
     {% block extra_js %}
       <script src="{% static 'assets/js/plugins/apexcharts.min.js' %}"></script>
       <script src="{% static 'assets/js/pages/dashboard-default.js' %}"></script>

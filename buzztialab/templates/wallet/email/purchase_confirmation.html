@@ -1,0 +1,30 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+  <head>
+    <title>{% trans "Purchase Confirmation" %}</title>
+    <style>
+      .purchase-details {
+        background-color: #f8f9fa;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>{% trans "Purchase Confirmation" %}</h2>
+    <p>{% trans "Hello" %} {{ user.get_short_name }},</p>
+    <p>{% trans "Your credit purchase has been completed successfully!" %}</p>
+    <div class="purchase-details">
+      <h3>{% trans "Purchase Details" %}:</h3>
+      <p>{% trans "Credits Purchased" %}: {{ credits }}</p>
+      <p>{% trans "Total Amount" %}: ${{ amount }}</p>
+      <p>{% trans "Transaction Date" %}: {{ date }}</p>
+      <p>{% trans "Payment Method" %}: {{ payment_method }}</p>
+    </div>
+    <p>{% trans "Thank you for your purchase!" %}</p>
+    <p>{% trans "If you have any questions, please contact our support team." %}</p>
+  </body>
+</html>

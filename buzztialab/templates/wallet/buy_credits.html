@@ -1,0 +1,181 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  Buy Credits | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">Buy Credits</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'wallet:dashboard' %}">Wallet</a>
+            </li>
+            <li class="breadcrumb-item">Buy Credits</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row justify-content-center">
+    <!-- Step Progress Bar -->
+    <div class="col-12 mb-4">
+      <div class="card">
+        <div class="card-body py-3">
+          <div class="steps-progress">
+            <div class="step-item" id="step-item-1">
+              <div class="step-circle active">1</div>
+              <div class="step-text">Amount</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" id="step-item-2">
+              <div class="step-circle">2</div>
+              <div class="step-text">Payment</div>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item" id="step-item-3">
+              <div class="step-circle">3</div>
+              <div class="step-text">Confirm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Main Content -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body p-lg-5">
+          <form id="purchaseForm" method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            <!-- Step 1: Amount Selection -->
+            <div id="select-credits" class="content active">
+              <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i>
+                <strong>Important:</strong> The minimum purchase amount is 10,000 credits. Each credit equals 1 peso.
+                Please consult the refund policy as credits must be used within the application and no monetary refunds are provided.
+              </div>
+              <h3 class="mb-4">How many credits would you like to purchase?</h3>
+              <div class="amount-input-container mb-4">
+                <div class="form-floating">
+                  <input type="number"
+                         class="form-control form-control-lg"
+                         id="creditsInput"
+                         name="credits"
+                         min="10000"
+                         step="1000"
+                         value="10000"
+                         placeholder="Enter amount" />
+                  <label for="creditsInput">Amount in Credits</label>
+                </div>
+                <div class="alert alert-secondary mt-3">
+                  <p class="mb-1">
+                    <strong>Minimum purchase:</strong> 10,000 credits
+                  </p>
+                  <p class="mb-0">
+                    <strong>Total:</strong> $<span id="totalValue">10,000</span>
+                  </p>
+                </div>
+              </div>
+              <button type="button"
+                      class="btn btn-primary btn-lg w-100"
+                      onclick="nextStep(2)">Continue to Payment</button>
+            </div>
+            <!-- Step 2: Payment Method -->
+            <div id="payment-method" class="content d-none">
+              <div class="mb-3">
+                <label for="bankSelect" class="form-label">Select Bank</label>
+                <select id="bankSelect" class="form-select" onchange="updateBank(this.value)">
+                  <option value="Nequi" selected>Nequi</option>
+                  <!-- Future banks can be added here -->
+                </select>
+              </div>
+              <div class="alert alert-secondary mt-3">
+                <p class="mb-1">
+                  <strong>Credits:</strong> <span id="summaryCredits">10,000</span>
+                </p>
+                <p class="mb-0">
+                  <strong>Total:</strong> $<span id="summaryTotal">10,000</span>
+                </p>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="prevStep(1)">Back</button>
+              <button type="button" class="btn btn-primary" onclick="nextStep(3)">Continue</button>
+            </div>
+            <!-- Step 3: Confirm -->
+            <div id="confirm" class="content d-none">
+              <div class="alert alert-info" id="verificationAlert">
+                <h6>Please review your purchase</h6>
+                <p>A verification code has been sent to your email. Please enter it below to continue.</p>
+              </div>
+              <!-- Alerta de error (inicialmente oculta) -->
+              <div class="alert alert-danger d-none" id="errorAlert">
+                <p>
+                  Invalid code. <span id="remainingAttempts">3</span> attempts remaining.
+                </p>
+              </div>
+              <div class="alert alert-secondary mt-3">
+                <p class="mb-1">
+                  <strong>Credits:</strong> <span id="confirmCredits">10,000</span>
+                </p>
+                <p class="mb-1">
+                  <strong>Total:</strong> $<span id="confirmTotal">10,000</span>
+                </p>
+                <p class="mb-0">
+                  <strong>Bank:</strong> <span id="confirmBank">Nequi</span>
+                </p>
+              </div>
+              <!-- Add verification code input -->
+              <div class="verification-section mb-4">
+                <label for="verificationCode" class="form-label">Enter Verification Code</label>
+                <div class="input-group">
+                  <input type="text"
+                         id="verificationCode"
+                         class="form-control"
+                         maxlength="5"
+                         placeholder="5-digit code"
+                         aria-describedby="resendCodeButton" />
+                  <button type="button"
+                          class="btn btn-outline-primary"
+                          id="resendCode"
+                          aria-label="Resend Code">Resend Code</button>
+                </div>
+                <div id="verificationMessage" class="form-text text-danger mt-2"></div>
+              </div>
+              <button type="button" class="btn btn-secondary" onclick="prevStep(2)">Back</button>
+              <button type="button"
+                      class="btn btn-success"
+                      id="verifyAndProceed"
+                      onclick="verifyCodeAndProceed()">Verify and Proceed</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/buy_credits.css' %}" />
+{% endblock extra_css %}
+{% block extra_js %}
+  <script>
+    // These variables will be available to buy_credits.js
+    const URLS = {
+      sendCode: "{% url 'wallet:send_verification_code' %}",
+      verifyCode: "{% url 'wallet:verify_code' %}"
+    };
+    const CSRF_TOKEN = "{{ csrf_token }}";
+  </script>
+  <script src="{% static 'assets/js/buy_credits.js' %}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,172 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  Wallet Dashboard | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">Wallet Dashboard</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">Wallet</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <!-- [ Main Content ] start -->
+  <div class="row">
+    <!-- Available Credits Card -->
+    <div class="col-xl-4 col-md-4 d-flex align-items-stretch">
+      <div class="card bg-primary-dark dashnum-card text-white overflow-hidden w-100">
+        <span class="round small"></span>
+        <span class="round big"></span>
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <div class="avtar avtar-lg">
+                <i class="text-white ti ti-cash-banknote f-26"></i>
+              </div>
+              <h5 class="text-white mb-3 mt-3">Available Credits</h5>
+              <span class="text-white d-block f-34 f-w-500 my-2">
+                {{ wallet.credits }}
+                <i class="ti ti-diamond"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Statistics Card -->
+    <div class="col-xl-4 col-md-4 d-flex align-items-stretch">
+      <div class="card bg-secondary-dark dashnum-card text-white overflow-hidden w-100">
+        <span class="round small"></span>
+        <span class="round big"></span>
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <div class="avtar avtar-lg">
+                <i class="text-white ti ti-chart-bar f-26"></i>
+              </div>
+              <h5 class="text-white mb-3 mt-3">Credit Statistics</h5>
+              <div class="row g-3">
+                <div class="col-6">
+                  <h6 class="text-white mb-1">Total Purchases</h6>
+                  <h4 class="text-white mb-0">
+                    {{ total_purchased }}
+                    <i class="ti ti-wallet text-white opacity-50"></i>
+                  </h4>
+                </div>
+                <div class="col-6">
+                  <h6 class="text-white mb-1">Services Used</h6>
+                  <h4 class="text-white mb-0">
+                    {{ total_spent }}
+                    <i class="ti ti-cash text-white opacity-50"></i>
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Quick Actions -->
+    <div class="col-xl-4 col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Quick Actions</h5>
+        </div>
+        <div class="card-body">
+          <a href="{% url 'wallet:buy_credits' %}"
+             class="btn btn-primary w-100 mb-2">
+            <i class="ti ti-plus"></i> Buy Credits
+          </a>
+          <a href="{% url 'wallet:transactions' %}"
+             class="btn btn-light-secondary w-100">
+            <i class="ti ti-history"></i> Transaction History
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Transaction History -->
+    <div class="col-xl-12 col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>Recent Transactions</h5>
+          <div class="card-header-right">
+            <a href="{% url 'wallet:transactions' %}" class="btn btn-primary btn-sm">View All</a>
+          </div>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Credits</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for transaction in recent_transactions %}
+                  <tr>
+                    <td>
+                      {% if transaction.transaction_type == 'BUY' %}
+                        <span class="badge bg-success"><i class="ti ti-shopping-cart"></i> Purchase</span>
+                      {% elif transaction.transaction_type == 'PAY' %}
+                        <span class="badge bg-info"><i class="ti ti-credit-card"></i> Payment</span>
+                      {% else %}
+                        <span class="badge bg-warning"><i class="ti ti-refresh"></i> Refund</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <strong>{{ transaction.credits }}</strong>
+                      <i class="ti ti-diamond text-muted"></i>
+                    </td>
+                    <td>${{ transaction.local_currency_amount }}</td>
+                    <td>
+                      {% if transaction.status == 'COM' %}
+                        <span class="badge bg-success">Completed</span>
+                      {% elif transaction.status == 'PEN' %}
+                        <span class="badge bg-warning">Pending</span>
+                      {% else %}
+                        <span class="badge bg-danger">Failed</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ transaction.created_at|date:"M d, Y H:i" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-center py-4">No transactions found</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- [ Main Content ] end -->
+{% endblock content %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'assets/css/wallet.css' %}" />
+{% endblock extra_css %}
+{% block extra_js %}
+  <script src="{% static 'assets/js/wallet.js' %}"></script>
+{% endblock extra_js %}

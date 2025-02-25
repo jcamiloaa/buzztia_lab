@@ -1,0 +1,399 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n humanize %}
+
+{% block title %}
+  Transaction History | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">Transaction History</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'wallet:dashboard' %}">Wallet</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">Transactions</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <!-- Current Balance -->
+    <div class="col-12 mb-4">
+      <div class="card bg-primary-dark text-white">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h4 class="text-white">Current Balance</h4>
+              <h2 class="text-white mb-0">
+                {{ wallet.credits|floatformat:0|intcomma }}
+                <i class="ti ti-diamond"></i>
+              </h2>
+            </div>
+            <div class="col-auto">
+              <a href="{% url 'wallet:buy_credits' %}" class="btn btn-light">
+                <i class="ti ti-plus"></i> Buy Credits
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Transaction Type Summary Cards -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-success-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-success small"></span>
+        <span class="round bg-success big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-shopping-cart"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_purchases }}</h4>
+              <p class="mb-0 opacity-75 text-sm">Credits Purchased</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-info-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-info small"></span>
+        <span class="round bg-info big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-credit-card"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_payments }}</h4>
+              <p class="mb-0 opacity-75 text-sm">Total Payments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-dark-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-dark small"></span>
+        <span class="round bg-dark big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-currency-dollar"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_savings }}</h4>
+              <p class="mb-0 opacity-75 text-sm">Total Savings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+      <div class="card bg-warning-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-warning small"></span>
+        <span class="round bg-warning big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-refresh"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_refunds }}</h4>
+              <p class="mb-0 opacity-75 text-sm">Total Refunds</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Transactions Table -->
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>All Transactions</h5>
+          <div class="card-header-right">
+            <div class="btn-group card-option">
+              <button type="button"
+                      class="btn dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                <i class="ti ti-dots-vertical"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <form id="exportForm"
+                        action="{% url 'wallet:export_transactions_csv' %}"
+                        method="get">
+                    <input type="hidden" name="type" id="export_type" />
+                    <input type="hidden" name="status" id="export_status" />
+                    <input type="hidden" name="date_from" id="export_date_from" />
+                    <input type="hidden" name="date_to" id="export_date_to" />
+                    <button type="submit" class="dropdown-item">Export CSV</button>
+                  </form>
+                </li>
+                <li>
+                  <a href="#"
+                     class="dropdown-item"
+                     data-bs-toggle="modal"
+                     data-bs-target="#filterModal">Filter</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Active Filters Section -->
+        {% if request.GET %}
+          <div class="card-body border-bottom">
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="active-filters">
+                <span class="text-muted me-2">Active filters:</span>
+                {% if request.GET.type %}
+                  <span class="badge bg-light text-dark me-2">
+                    Type: {{ request.GET.type|upper }}
+                    <a href="?{% for key,value in request.GET.items %}{% if key != 'type' %}{{ key }}={{ value }}&{% endif %}{% endfor %}"
+                       class="text-danger ms-1">
+                      <i class="ti ti-x"></i>
+                    </a>
+                  </span>
+                {% endif %}
+                {% if request.GET.status %}
+                  <span class="badge bg-light text-dark me-2">
+                    Status: {{ request.GET.status|upper }}
+                    <a href="?{% for key,value in request.GET.items %}{% if key != 'status' %}{{ key }}={{ value }}&{% endif %}{% endfor %}"
+                       class="text-danger ms-1">
+                      <i class="ti ti-x"></i>
+                    </a>
+                  </span>
+                {% endif %}
+                {% if request.GET.date_from %}
+                  <span class="badge bg-light text-dark me-2">
+                    From: {{ request.GET.date_from }}
+                    <a href="?{% for key,value in request.GET.items %}{% if key != 'date_from' %}{{ key }}={{ value }}&{% endif %}{% endfor %}"
+                       class="text-danger ms-1">
+                      <i class="ti ti-x"></i>
+                    </a>
+                  </span>
+                {% endif %}
+                {% if request.GET.date_to %}
+                  <span class="badge bg-light text-dark me-2">
+                    To: {{ request.GET.date_to }}
+                    <a href="?{% for key,value in request.GET.items %}{% if key != 'date_to' %}{{ key }}={{ value }}&{% endif %}{% endfor %}"
+                       class="text-danger ms-1">
+                      <i class="ti ti-x"></i>
+                    </a>
+                  </span>
+                {% endif %}
+              </div>
+              <div>
+                <a href="{% url 'wallet:transactions' %}" class="btn btn-sm btn-light">
+                  <i class="ti ti-trash"></i> Clear All Filters
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover table-striped mb-0">
+              <thead>
+                <tr>
+                  <th>Reference ID</th>
+                  <th>Type</th>
+                  <th>Credits</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Description</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for transaction in transactions %}
+                  <tr>
+                    <td>
+                      <small class="text-muted">{{ transaction.reference_id }}</small>
+                    </td>
+                    <td>
+                      {% if transaction.transaction_type == 'BUY' %}
+                        <span class="badge bg-success"><i class="ti ti-shopping-cart"></i> Purchase</span>
+                      {% elif transaction.transaction_type == 'PAY' %}
+                        <span class="badge bg-info"><i class="ti ti-credit-card"></i> Payment</span>
+                      {% elif transaction.transaction_type == 'SAV' %}
+                        <span class="badge bg-primary"><i class="ti ti-piggy-bank"></i> Savings</span>
+                      {% else %}
+                        <span class="badge bg-warning"><i class="ti ti-refresh"></i> Refund</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <strong>{{ transaction.credits|floatformat:0|intcomma }}</strong>
+                      <i class="ti ti-diamond text-muted"></i>
+                    </td>
+                    <td>${{ transaction.local_currency_amount }}</td>
+                    <td>
+                      {% if transaction.status == 'COM' %}
+                        <span class="badge bg-success">Completed</span>
+                      {% elif transaction.status == 'PEN' %}
+                        <span class="badge bg-warning">Pending</span>
+                      {% else %}
+                        <span class="badge bg-danger">Failed</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ transaction.description|truncatechars:30 }}</td>
+                    <td>{{ transaction.created_at|date:"M d, Y H:i" }}</td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="7" class="text-center py-4">No transactions found</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <!-- Pagination -->
+          {% if transactions.paginator.num_pages > 1 %}
+            <div class="card-footer">
+              <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                  {% if transactions.has_previous %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="?page={{ transactions.previous_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                         aria-label="Previous">
+                        <span aria-hidden="true">«</span>
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <span class="page-link">«</span>
+                    </li>
+                  {% endif %}
+                  {% for num in transactions.paginator.page_range %}
+                    {% if transactions.number == num %}
+                      <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                      </li>
+                    {% elif num > transactions.number|add:'-3' and num < transactions.number|add:'3' %}
+                      <li class="page-item">
+                        <a class="page-link"
+                           href="?page={{ num }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                      </li>
+                    {% endif %}
+                  {% endfor %}
+                  {% if transactions.has_next %}
+                    <li class="page-item">
+                      <a class="page-link"
+                         href="?page={{ transactions.next_page_number }}{% for key,value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}"
+                         aria-label="Next">
+                        <span aria-hidden="true">»</span>
+                      </a>
+                    </li>
+                  {% else %}
+                    <li class="page-item disabled">
+                      <span class="page-link">»</span>
+                    </li>
+                  {% endif %}
+                </ul>
+              </nav>
+              <div class="text-center mt-2">
+                <small class="text-muted">Showing page {{ transactions.number }} of {{ transactions.paginator.num_pages }}</small>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Filter Modal -->
+  <div class="modal fade"
+       id="filterModal"
+       tabindex="-1"
+       aria-labelledby="filterModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="filterModalLabel">Filter Transactions</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <form method="get">
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="type" class="form-label">Transaction Type</label>
+              <select class="form-select" name="type" id="type">
+                <option value="">All</option>
+                <option value="BUY">Purchase</option>
+                <option value="PAY">Payment</option>
+                <option value="SAV">Savings</option>
+                <option value="REF">Refund</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="status" class="form-label">Status</label>
+              <select class="form-select" name="status" id="status">
+                <option value="">All</option>
+                <option value="COM">Completed</option>
+                <option value="PEN">Pending</option>
+                <option value="FAI">Failed</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date Range</label>
+              <div class="row">
+                <div class="col">
+                  <input type="date" class="form-control" name="date_from" id="date_from" />
+                </div>
+                <div class="col">
+                  <input type="date" class="form-control" name="date_to" id="date_to" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_js %}
+  <script>
+    // Add any JavaScript for handling credit purchases here
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set initial filter values from URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+
+      ['type', 'status', 'date_from', 'date_to'].forEach(param => {
+        if (urlParams.has(param)) {
+          document.getElementById(param).value = urlParams.get(param);
+          document.getElementById('export_' + param).value = urlParams.get(param);
+        }
+      });
+
+      // Update export form when filters change
+      document.querySelectorAll('#filterModal select, #filterModal input').forEach(input => {
+        input.addEventListener('change', function() {
+          document.getElementById('export_' + this.name).value = this.value;
+        });
+      });
+    });
+  </script>
+{% endblock extra_js %}

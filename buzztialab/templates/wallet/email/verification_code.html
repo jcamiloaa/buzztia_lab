@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
+  <head>
+    <title>{% trans "Verification Code for Credit Purchase" %}</title>
+    <style>
+      .verification-code {
+        font-size: 32px;
+        color: #007bff;
+        text-align: center;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>{% trans "Credit Purchase Verification" %}</h2>
+    <p>{% trans "Hello" %} {{ user.get_short_name }},</p>
+    <p>{% trans "Your verification code for purchasing credits is:" %}</p>
+    <h1 class="verification-code">{{ code }}</h1>
+    <p>{% trans "This code will expire in 15 minutes." %}</p>
+    <p>{% trans "If you didn't request this code, please ignore this email." %}</p>
+  </body>
+</html>
