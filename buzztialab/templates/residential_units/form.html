@@ -1,0 +1,136 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n crispy_forms_tags %}
+
+{% block title %}
+  {% if form.instance.pk %}
+    {% translate "Edit Unit" %} | {{ form.instance.name }}
+  {% else %}
+    {% translate "New Residential Unit" %}
+  {% endif %}
+  | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">
+              {% if form.instance.pk %}
+                {% translate "Edit Residential Unit" %}
+              {% else %}
+                {% translate "Create New Residential Unit" %}
+              {% endif %}
+            </h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'residential_units:dashboard' %}">{% translate "Residential Units" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">
+              {% if form.instance.pk %}
+                {% translate "Edit" %}
+              {% else %}
+                {% translate "Create" %}
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>
+            {% if form.instance.pk %}
+              {% translate "Edit Unit Information" %}
+            {% else %}
+              {% translate "New Residential Unit Information" %}
+            {% endif %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post"
+                enctype="multipart/form-data"
+                class="needs-validation"
+                novalidate>
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">{{ form.name|as_crispy_field }}</div>
+              <div class="col-md-6">{{ form.property_type|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">{{ form.address|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">{{ form.phone|as_crispy_field }}</div>
+              <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">{{ form.map_url|as_crispy_field }}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">{{ form.description|as_crispy_field }}</div>
+            </div>
+            {% if form.photo %}
+              <div class="row">
+                <div class="col-md-12">{{ form.photo|as_crispy_field }}</div>
+              </div>
+            {% endif %}
+            {% if user.is_superuser and form.instance.pk %}
+              <div class="row">
+                <div class="col-md-6">{{ form.status|as_crispy_field }}</div>
+              </div>
+            {% endif %}
+            <div class="row">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  {% if form.instance.pk %}
+                    {% translate "Update Unit" %}
+                  {% else %}
+                    {% translate "Create Unit" %}
+                  {% endif %}
+                </button>
+                <a href="{% url 'residential_units:dashboard' %}"
+                   class="btn btn-secondary">{% translate "Cancel" %}</a>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_css %}
+  <!-- Add any page specific CSS here -->
+{% endblock extra_css %}
+{% block extra_js %}
+  {{ block.super }}
+  <script>
+    // Form validation
+    (function() {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms)
+        .forEach(function(form) {
+          form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+              event.preventDefault()
+              event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+          }, false)
+        })
+    })()
+  </script>
+{% endblock extra_js %}

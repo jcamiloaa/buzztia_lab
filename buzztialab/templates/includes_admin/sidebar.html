@@ -87,6 +87,30 @@
             <span class="pc-mtext">{% translate "Transaction History" %}</span>
           </a>
         </li>
+        {% if user.is_staff or user.is_superuser %}
+          <li class="pc-item pc-caption">
+            <label>{% translate "Residential Units" %}</label>
+            <i class="ti ti-building"></i>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'residential_units:dashboard' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-building"></i></span>
+              <span class="pc-mtext">{% translate "Units Dashboard" %}</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'residential_units:create' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-plus"></i></span>
+              <span class="pc-mtext">{% translate "New Unit" %}</span>
+            </a>
+          </li>
+          <li class="pc-item">
+            <a href="{% url 'residential_units:list' %}" class="pc-link">
+              <span class="pc-micon"><i class="ti ti-list"></i></span>
+              <span class="pc-mtext">{% translate "Manage Units" %}</span>
+            </a>
+          </li>
+        {% endif %}
         <li class="pc-item pc-caption">
           <label>{% translate "User Configuration" %}</label>
           <i class="ti ti-user-cog"></i>

@@ -51,6 +51,12 @@ urlpatterns = [
     path("users/", include("buzztialab.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     path("wallet/", include("buzztialab.apps.wallet.urls", namespace="wallet")),
+    path(
+        "residential_units/",
+        include(
+            "buzztialab.apps.residential_units.urls", namespace="residential_units"
+        ),
+    ),
     # Your stuff: custom urls includes go here
     # ...
     # Media files

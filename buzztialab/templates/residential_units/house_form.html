@@ -1,0 +1,51 @@
+{% load i18n %}
+
+<div class="modal-header">
+  <h5 class="modal-title">
+    {% if house.pk %}
+      {% translate "Edit House/Apartment" %}
+    {% else %}
+      {% translate "Add House/Apartment" %}
+    {% endif %}
+  </h5>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <form id="houseForm"
+        method="post"
+        action="{% if house.pk %}{% url 'residential_units:edit_house' unit.pk house.pk %}{% else %}{% url 'residential_units:add_house' unit.pk %}{% endif %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="number" class="form-label">{% translate "Number" %}*</label>
+      <input type="text"
+             class="form-control"
+             id="number"
+             name="number"
+             value="{{ house.number|default:'' }}"
+             required />
+    </div>
+    <div class="mb-3">
+      <label for="tower_label" class="form-label">{% translate "Tower" %}</label>
+      <input type="text"
+             class="form-control"
+             id="tower_label"
+             name="tower_label"
+             value="{{ house.tower_label|default:'' }}" />
+    </div>
+    <div class="mb-3">
+      <label for="floor" class="form-label">{% translate "Floor" %}</label>
+      <input type="number"
+             class="form-control"
+             id="floor"
+             name="floor"
+             value="{{ house.floor|default:'' }}" />
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+  <button type="submit" form="houseForm" class="btn btn-primary">{% translate "Save" %}</button>
+</div>

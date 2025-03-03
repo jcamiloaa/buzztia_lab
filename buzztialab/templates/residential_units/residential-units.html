@@ -1,0 +1,248 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  {% translate "Residential Units" %} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% translate "Residential Units Management" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% translate "Residential Units" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row mb-3">
+    <div class="col">
+      <h4>{% translate "Dashboard Overview" %}</h4>
+    </div>
+    <div class="col-auto">
+      <a href="{% url 'residential_units:list' %}" class="btn btn-primary">
+        <i class="ti ti-list"></i> {% translate "View All Units" %}
+      </a>
+    </div>
+  </div>
+  <!-- [ Main Content ] start -->
+  <div class="row">
+    <!-- Stats cards -->
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-success-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-success small"></span>
+        <span class="round bg-success big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-building"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_units }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Total Residential Units" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-info-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-info small"></span>
+        <span class="round bg-info big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-check"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ approved_units }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Approved Residential Units" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-warning-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-warning small"></span>
+        <span class="round bg-warning big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-clock"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ pending_units }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Residential Units Pending Approval" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-danger-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-danger small"></span>
+        <span class="round bg-danger big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-x"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ rejected_units }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Rejected Residential Units" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-success-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-success small"></span>
+        <span class="round bg-success big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-home"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_houses }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Total Houses/Apartments" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-2 col-md-2 col-6">
+      <div class="card bg-warning-dark dashnum-card dashnum-card-small text-black overflow-hidden">
+        <span class="round bg-warning small"></span>
+        <span class="round bg-warning big"></span>
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center">
+            <div class="avtar avtar-lg">
+              <i class="text-black ti ti-users"></i>
+            </div>
+            <div class="ms-2">
+              <h4 class="text-black mb-1">{{ total_residents }}</h4>
+              <p class="mb-0 opacity-75 text-sm">{% translate "Total Residents in All Units" %}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Units List -->
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>{% translate "Recent Units" %}</h5>
+          {% if user.is_staff %}
+            <div class="float-end">
+              <a href="{% url 'residential_units:create' %}" class="btn btn-primary">
+                <i class="ti ti-plus"></i> {% translate "New Unit" %}
+              </a>
+            </div>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="recentUnitsTable" class="table table-hover display nowrap">
+              <thead>
+                <tr>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Type" %}</th>
+                  <th>{% translate "Status" %}</th>
+                  <th>{% translate "Houses" %}</th>
+                  <th>{% translate "Residents" %}</th>
+                  <th>{% translate "Created By" %}</th>
+                  <th>{% translate "Created At" %}</th>
+                  <th>{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for unit in recent_units %}
+                  <tr>
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.get_property_type_display }}</td>
+                    <td>
+                      <span class="badge {% if unit.status == 'approved' %}bg-success{% elif unit.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                        {{ unit.get_status_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary">{{ unit.total_houses }}</span>
+                    </td>
+                    <td>
+                      <span class="badge bg-info">{{ unit.total_residents }}</span>
+                    </td>
+                    <td>{{ unit.created_by.name }}</td>
+                    <td data-order="{{ unit.created_at|date:'Y-m-d H:i' }}">{{ unit.created_at|date:"SHORT_DATE_FORMAT" }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <a href="{% url 'residential_units:detail' unit.id %}"
+                           class="btn btn-sm btn-info">
+                          <i class="ti ti-eye"></i>
+                        </a>
+                        {% if user.is_staff %}
+                          <a href="{% url 'residential_units:edit' unit.id %}"
+                             class="btn btn-sm btn-warning">
+                            <i class="ti ti-pencil"></i>
+                          </a>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_css %}
+  {{ block.super }}
+  {% include "residential_units/residential-styles.html" %}
+{% endblock extra_css %}
+{% block extra_js %}
+  {{ block.super }}
+  {% include "residential_units/residential-includes.html" %}
+  <script>
+    $(document).ready(function() {
+      $('#recentUnitsTable').DataTable({
+        responsive: {
+          details: {
+            display: DataTable.Responsive.display.modal({
+              header: function(row) {
+                return 'Details for ' + row.data()[0];
+              }
+            }),
+            renderer: DataTable.Responsive.renderer.tableAll()
+          }
+        },
+        ordering: false,
+        paging: false,
+        searching: false,
+        info: false,
+        columnDefs: [{
+          targets: -1,
+          orderable: false,
+          searchable: false,
+          width: '100px'
+        }]
+      });
+    });
+  </script>
+{% endblock extra_js %}

@@ -1,0 +1,80 @@
+{% load static i18n %}
+
+<!-- DataTables -->
+<link rel="stylesheet"
+      type="text/css"
+      href="{% static 'assets/css/plugins/datatables/buttons.bootstrap5.min.css' %}" />
+<link rel="stylesheet"
+      href="{% static 'assets/css/plugins/datatables/dataTables.bootstrap5.min.css' %}" />
+<link rel="stylesheet"
+      href="{% static 'assets/css/plugins/datatables/responsive.bootstrap5.min.css' %}" />
+<!-- SweetAlert2 -->
+<link rel="stylesheet"
+      href="{% static 'assets/css/plugins/sweetalert2/sweetalert2.min.css' %}" />
+<style>
+  .dataTables_wrapper {
+    width: 100%;
+    margin: 0;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .card .dataTables_wrapper .dt-buttons {
+    margin-bottom: 1rem;
+    padding: 0;
+  }
+
+  .dt-buttons .btn {
+    margin-right: 0.5rem;
+  }
+
+  .dtr-details {
+    width: 100%;
+  }
+
+  .dataTables_length,
+  .dataTables_filter,
+  .dataTables_info,
+  .dataTables_paginate .pagination {
+    margin: 1rem 0;
+    justify-content: flex-end;
+  }
+
+  #unitsTable {
+    width: 100%;
+  }
+
+  #recentUnitsTable {
+    width: 100%;
+  }
+
+  .unit-photo {
+    max-height: 250px;
+    object-fit: cover;
+  }
+
+  .status-icon {
+    font-size: 48px;
+  }
+
+  #housesTable {
+    width: 100%;
+  }
+
+  #previewContainer {
+    display: none;
+  }
+
+  .preview-scroll {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .preview-container {
+    display: none;
+    margin-top: 1.5rem;
+  }
+</style>

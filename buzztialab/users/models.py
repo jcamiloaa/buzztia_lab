@@ -55,3 +55,6 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"pk": self.id})
+
+    def get_full_name(self):
+        return self.name

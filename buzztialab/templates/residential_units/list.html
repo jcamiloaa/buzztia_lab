@@ -1,0 +1,210 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  {% translate "Residential Units List" %} | BuzztiaBal
+{% endblock title %}
+{% block extra_css %}
+  {{ block.super }}
+  {% include "residential_units/residential-styles.html" %}
+{% endblock extra_css %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% translate "Residential Units List" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'residential_units:dashboard' %}">{% translate "Residential Units" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{% translate "List" %}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  {% csrf_token %}
+  <div class="mt-4 row">
+    <div class="col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col">
+              <h5>{% translate "All Residential Units" %}</h5>
+            </div>
+            <div class="col-auto">
+              {% if user.is_staff %}
+                <a href="{% url 'residential_units:create' %}" class="btn btn-primary">
+                  <i class="ti ti-plus"></i> {% translate "New Unit" %}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="unitsTable" class="table table-hover nowrap">
+              <thead>
+                <tr>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Type" %}</th>
+                  <th>{% translate "Address" %}</th>
+                  <th>{% translate "Status" %}</th>
+                  <th>{% translate "Houses" %}</th>
+                  <th>{% translate "Residents" %}</th>
+                  <th>{% translate "Phone" %}</th>
+                  <th>{% translate "Email" %}</th>
+                  <th>{% translate "Created By" %}</th>
+                  <th>{% translate "Created At" %}</th>
+                  <th>{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for unit in units %}
+                  <tr>
+                    <td>{{ unit.name }}</td>
+                    <td>{{ unit.get_property_type_display }}</td>
+                    <td>{{ unit.address }}</td>
+                    <td>
+                      <span class="badge {% if unit.status == 'approved' %}bg-success{% elif unit.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                        {{ unit.get_status_display }}
+                      </span>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary">{{ unit.total_houses }}</span>
+                    </td>
+                    <td>
+                      <span class="badge bg-info">{{ unit.total_residents }}</span>
+                    </td>
+                    <td>{{ unit.phone|default:"--" }}</td>
+                    <td>{{ unit.email|default:"--" }}</td>
+                    <td>{{ unit.created_by.name }}</td>
+                    <td data-order="{{ unit.created_at|date:'Y-m-d H:i' }}">{{ unit.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+                    <td>
+                      <div class="btn-group">
+                        <a href="{% url 'residential_units:detail' unit.id %}"
+                           class="btn btn-sm btn-info">
+                          <i class="ti ti-eye"></i>
+                        </a>
+                        {% if user.is_staff %}
+                          <a href="{% url 'residential_units:edit' unit.id %}"
+                             class="btn btn-sm btn-warning">
+                            <i class="ti ti-pencil"></i>
+                          </a>
+                        {% endif %}
+                        {% if user.is_superuser and unit.status == 'pending' %}
+                          <button type="button"
+                                  class="btn btn-sm btn-success"
+                                  onclick="approveUnit({{ unit.id }})">
+                            <i class="ti ti-check"></i>
+                          </button>
+                          <button type="button"
+                                  class="btn btn-sm btn-danger"
+                                  onclick="rejectUnit({{ unit.id }})">
+                            <i class="ti ti-x"></i>
+                          </button>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="11" class="text-center">{% translate "No residential units found." %}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_js %}
+  {{ block.super }}
+  {% include "residential_units/residential-includes.html" %}
+  <script>
+    $(document).ready(function() {
+      const table = $('#unitsTable').DataTable({
+        responsive: {
+          details: {
+            display: DataTable.Responsive.display.modal({
+              header: function(row) {
+                return 'Details for ' + row.data()[0];
+              }
+            }),
+            renderer: DataTable.Responsive.renderer.tableAll()
+          }
+        },
+        dom: '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>' +
+          '<"row"<"col-sm-12"tr>>' +
+          '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [{
+          extend: 'collection',
+          text: '<i class="ti ti-download"></i> {% translate "Export" %}',
+          className: 'btn btn-primary btn-sm',
+          buttons: [{
+            extend: 'excel',
+            text: '<i class="ti ti-file-spreadsheet"></i> Excel',
+            className: 'btn btn-success btn-sm',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            }
+          }, {
+            extend: 'pdf',
+            text: '<i class="ti ti-file-text"></i> PDF',
+            className: 'btn btn-danger btn-sm',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            }
+          }, {
+            extend: 'csv',
+            text: '<i class="ti ti-file"></i> CSV',
+            className: 'btn btn-info btn-sm',
+            exportOptions: {
+              columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+            }
+          }]
+        }, {
+          extend: 'print',
+          text: '<i class="ti ti-printer"></i> {% translate "Print" %}',
+          className: 'btn btn-secondary btn-sm',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+          }
+        }],
+        order: [
+          [9, 'desc']
+        ],
+        pageLength: 10,
+        language: {
+          url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        },
+        columnDefs: [{
+          targets: -1,
+          orderable: false,
+          searchable: false,
+          width: '120px'
+        }, {
+          targets: [3, 4, 5],
+          orderable: true,
+          searchable: false
+        }]
+      });
+
+      // Mejorar la apariencia de los botones
+      $('.dt-buttons .btn').addClass('me-2');
+    });
+  </script>
+{% endblock extra_js %}

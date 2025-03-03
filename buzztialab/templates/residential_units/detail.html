@@ -1,0 +1,901 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  {{ unit.name }} | {% translate "Residential Unit Details" %} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% translate "Residential Unit Details" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'residential_units:dashboard' %}">{% translate "Residential Units" %}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{{ unit.name }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  {% csrf_token %}
+  <div class="mt-4 row">
+    <!-- Unit Information Card -->
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col">
+              <h5>{% translate "Unit Information" %}</h5>
+            </div>
+            <div class="col-auto">
+              {% if user.is_staff %}
+                <a href="{% url 'residential_units:edit' unit.pk %}"
+                   class="btn btn-warning">
+                  <i class="ti ti-pencil"></i> {% translate "Edit" %}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Name" %}</h6>
+                <h5>{{ unit.name }}</h5>
+              </div>
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Property Type" %}</h6>
+                <h5>{{ unit.get_property_type_display }}</h5>
+              </div>
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Status" %}</h6>
+                <span class="badge {% if unit.status == 'approved' %}bg-success{% elif unit.status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                  {{ unit.get_status_display }}
+                </span>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Contact Phone" %}</h6>
+                <h5>{{ unit.phone|default:"--" }}</h5>
+              </div>
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Contact Email" %}</h6>
+                <h5>{{ unit.email|default:"--" }}</h5>
+              </div>
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Created By" %}</h6>
+                <h5>{{ unit.created_by.name }}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="mb-4">
+                <h6 class="text-muted mb-2">{% translate "Address" %}</h6>
+                <h5>{{ unit.address }}</h5>
+              </div>
+              {% if unit.map_url %}
+                <div class="mb-4">
+                  <h6 class="text-muted mb-2">{% translate "Location" %}</h6>
+                  <a href="{{ unit.map_url }}" target="_blank" class="btn btn-primary">
+                    <i class="ti ti-map-pin"></i> {% translate "View on Google Maps" %}
+                  </a>
+                </div>
+              {% endif %}
+              {% if unit.description %}
+                <div class="mb-4">
+                  <h6 class="text-muted mb-2">{% translate "Description" %}</h6>
+                  <p class="mb-0">{{ unit.description }}</p>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Photo and Actions Card -->
+    <div class="col-md-4">
+      {% if unit.photo %}
+        <div class="card">
+          <div class="card-header">
+            <h5>{% translate "Property Photo" %}</h5>
+          </div>
+          <div class="card-body">
+            <img src="{{ unit.photo.url }}"
+                 alt="{{ unit.name }}"
+                 class="img-fluid rounded unit-photo" />
+          </div>
+        </div>
+      {% endif %}
+      {% if user.is_superuser and unit.status == 'pending' %}
+        <div class="card">
+          <div class="card-header">
+            <h5>{% translate "Actions" %}</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <button class="btn btn-success" onclick="approveUnit({{ unit.id }})">
+                <i class="ti ti-check"></i> {% translate "Approve Unit" %}
+              </button>
+              <button class="btn btn-danger" onclick="rejectUnit({{ unit.id }})">
+                <i class="ti ti-x"></i> {% translate "Reject Unit" %}
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+    <!-- Houses/Apartments List -->
+    {% if unit.status == 'approved' %}
+      <div class="col-12 mt-4">
+        <div class="card">
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col">
+                <h5>{% translate "Houses/Apartments" %}</h5>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-primary" onclick="addHouse()">
+                  <i class="ti ti-plus"></i> {% translate "Add House/Apartment" %}
+                </button>
+                <button class="btn btn-success" onclick="bulkAddHouse()">
+                  <i class="ti ti-plus"></i> {% translate "Bulk Add" %}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="housesTable" class="table table-hover display nowrap">
+                <thead>
+                  <tr>
+                    <th>{% translate "Number" %}</th>
+                    <th>{% translate "Tower" %}</th>
+                    <th>{% translate "Floor" %}</th>
+                    <th>{% translate "Created" %}</th>
+                    <th>{% translate "QR Code" %}</th>
+                    <th>{% translate "Actions" %}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for house in unit.houses.all %}
+                    <tr>
+                      <td>{{ house.number }}</td>
+                      <td>{{ house.tower_label|default:"--" }}</td>
+                      <td>{{ house.floor|default:"--" }}</td>
+                      <td data-order="{{ house.created_at|date:'Y-m-d H:i' }}">{{ house.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
+                      <td>
+                        {% if house.qr_code %}
+                          <button class="btn btn-sm btn-info"
+                                  onclick="showQRModal('{{ house.qr_code.url }}', '{{ house.number }}')">
+                            <i class="ti ti-qrcode"></i> {% translate "View QR" %}
+                          </button>
+                        {% else %}
+                          --
+                        {% endif %}
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-sm btn-warning" onclick="editHouse({{ house.id }})">
+                            <i class="ti ti-pencil"></i>
+                          </button>
+                          <button class="btn btn-sm btn-danger" onclick="deleteHouse({{ house.id }})">
+                            <i class="ti ti-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="5" class="text-center">{% translate "No houses/apartments added yet." %}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% elif unit.status == 'pending' %}
+      <div class="col-12 mt-4">
+        <div class="card bg-warning-subtle">
+          <div class="card-body text-center py-4">
+            <i class="ti ti-clock-pause text-warning status-icon"></i>
+            <h4 class="mt-3">{% translate "Pending Approval" %}</h4>
+            <p class="mb-0">{% translate "You can manage houses/apartments once this unit is approved." %}</p>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12 mt-4">
+        <div class="card bg-danger-subtle">
+          <div class="card-body text-center py-4">
+            <i class="ti ti-x text-danger status-icon"></i>
+            <h4 class="mt-3">{% translate "Unit Rejected" %}</h4>
+            <p class="mb-0">{% translate "This unit has been rejected. Houses/apartments cannot be managed." %}</p>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <!-- QR Code Modal -->
+  <div class="modal fade"
+       id="qrModal"
+       tabindex="-1"
+       aria-labelledby="qrModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="qrModalLabel">{% translate "QR Code" %}</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="qrImage" src="" alt="QR Code" class="img-fluid" />
+          <p class="mt-2" id="qrDescription"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+          <a href="#" id="downloadQR" class="btn btn-primary" download>
+            <i class="ti ti-download"></i> {% translate "Download" %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- House Modal -->
+  <div class="modal fade"
+       id="houseModal"
+       tabindex="-1"
+       aria-labelledby="houseModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" id="houseModalContent">
+        <!-- Modal content will be loaded here -->
+      </div>
+    </div>
+  </div>
+  <!-- Bulk Add Modal -->
+  <div class="modal fade"
+       id="bulkAddModal"
+       tabindex="-1"
+       aria-labelledby="bulkAddModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bulkAddModalLabel">{% translate "Bulk Add Houses/Apartments" %}</h5>
+          <button type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bulkAddForm">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="alert alert-info">
+                  <i class="ti ti-info-circle me-2"></i>
+                  {% if unit.property_type == 'casa' %}
+                    {% translate "Create multiple houses at once" %}
+                  {% else %}
+                    {% translate "Create multiple apartments at once" %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <!-- House form section -->
+            {% if unit.property_type == 'casa' %}
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="house_prefix" class="form-label">{% translate "House Prefix" %}</label>
+                  <input type="text"
+                         class="form-control"
+                         id="house_prefix"
+                         name="house_prefix"
+                         placeholder="Casa, Unidad, Villa, etc."
+                         required />
+                  <div class="form-text">{% translate "Example: 'Casa', 'Unidad', etc." %}</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="house_start" class="form-label">{% translate "Starting Number" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="house_start"
+                         name="house_start"
+                         value="1"
+                         min="1"
+                         required />
+                  <div class="form-text">{% translate "First house number in sequence" %}</div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="house_count" class="form-label">{% translate "Number of Houses" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="house_count"
+                         name="house_count"
+                         value="10"
+                         min="1"
+                         max="100"
+                         required />
+                  <div class="form-text">{% translate "How many houses to create" %}</div>
+                </div>
+                <div class="col-md-6">
+                  <label for="house_separator" class="form-label">{% translate "Separator" %}</label>
+                  <select class="form-control" id="house_separator" name="house_separator">
+                    <option value=" ">{% translate "Space" %} (Casa 1)</option>
+                    <option value="-">{% translate "Hyphen" %} (Casa-1)</option>
+                    <option value="">{% translate "None" %} (Casa1)</option>
+                  </select>
+                </div>
+              </div>
+            {% endif %}
+            <!-- Apartment form section -->
+            {% if unit.property_type == 'apartamento' %}
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="tower_type" class="form-label">{% translate "Tower Naming Convention" %}</label>
+                  <select class="form-control" id="tower_type" name="tower_type">
+                    <option value="numeric">{% translate "Numeric" %} (Torre 1, 2, 3...)</option>
+                    <option value="alpha">{% translate "Alphabetic" %} (Torre A, B, C...)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="tower_prefix" class="form-label">{% translate "Tower Prefix" %}</label>
+                  <input type="text"
+                         class="form-control"
+                         id="tower_prefix"
+                         name="tower_prefix"
+                         value="Torre"
+                         placeholder="Torre, Edificio, etc."
+                         required />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="tower_start" class="form-label">{% translate "Starting Tower" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="tower_start"
+                         name="tower_start"
+                         value="1"
+                         min="1"
+                         required />
+                </div>
+                <div class="col-md-4">
+                  <label for="tower_count" class="form-label">{% translate "Number of Towers" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="tower_count"
+                         name="tower_count"
+                         value="1"
+                         min="1"
+                         max="26"
+                         required />
+                </div>
+                <div class="col-md-4">
+                  <label for="tower_separator" class="form-label">{% translate "Tower Separator" %}</label>
+                  <select class="form-control" id="tower_separator" name="tower_separator">
+                    <option value=" ">{% translate "Space" %} (Torre 1)</option>
+                    <option value="-">{% translate "Hyphen" %} (Torre-1)</option>
+                    <option value="">{% translate "None" %} (Torre1)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4">
+                  <label for="floor_count" class="form-label">{% translate "Floors per Tower" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="floor_count"
+                         name="floor_count"
+                         value="5"
+                         min="1"
+                         max="100"
+                         required />
+                </div>
+                <div class="col-md-4">
+                  <label for="floor_start" class="form-label">{% translate "Starting Floor" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="floor_start"
+                         name="floor_start"
+                         value="1"
+                         min="0"
+                         required />
+                  <div class="form-text">{% translate "0 for ground floor" %}</div>
+                </div>
+                <div class="col-md-4">
+                  <label for="apts_per_floor" class="form-label">{% translate "Apartments per Floor" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="apts_per_floor"
+                         name="apts_per_floor"
+                         value="4"
+                         min="1"
+                         max="20"
+                         required />
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="apt_format" class="form-label">{% translate "Apartment Number Format" %}</label>
+                  <select class="form-control" id="apt_format" name="apt_format">
+                    <option value="floor_unit">{% translate "Floor + Unit" %} (101, 102...)</option>
+                    <option value="separate">{% translate "Floor-Unit" %} (1-01, 1-02...)</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="apt_digits" class="form-label">{% translate "Unit Digits" %}</label>
+                  <input type="number"
+                         class="form-control"
+                         id="apt_digits"
+                         name="apt_digits"
+                         value="2"
+                         min="1"
+                         max="3"
+                         required />
+                  <div class="form-text">{% translate "Number of digits for unit number (e.g., 2 digits: 01, 02...)" %}</div>
+                </div>
+              </div>
+            {% endif %}
+            <div class="row">
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input"
+                         type="checkbox"
+                         id="generatePreview"
+                         name="generatePreview"
+                         checked />
+                  <label class="form-check-label" for="generatePreview">{% translate "Show preview before creating" %}</label>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="mt-4 preview-container" id="previewContainer">
+            <h6>{% translate "Preview" %}</h6>
+            <div class="border p-3 bg-light preview-scroll">
+              <ul id="previewList" class="list-unstyled mb-0">
+              </ul>
+            </div>
+            <small class="text-muted">{% translate "Total" %}: <span id="previewCount">0</span> {% translate "units" %}</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+          <button type="button" class="btn btn-info" id="previewBtn">{% translate "Generate Preview" %}</button>
+          <button type="button" class="btn btn-primary" id="bulkAddBtn" disabled>{% translate "Create All" %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_css %}
+  {{ block.super }}
+  {% include "residential_units/residential-styles.html" %}
+{% endblock extra_css %}
+{% block extra_js %}
+  {{ block.super }}
+  {% include "residential_units/residential-includes.html" %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize DataTable with modified options to match your theme
+      let table = $('#housesTable').DataTable({
+        responsive: true,
+        dom: '<"row align-items-center"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>' +
+          '<"row"<"col-sm-12"tr>>' +
+          '<"row align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [{
+          extend: 'excel',
+          text: '<i class="ti ti-file-spreadsheet"></i> Excel',
+          className: 'btn btn-success btn-sm',
+          exportOptions: {
+            columns: [0, 1, 2, 3]
+          }
+        }, {
+          extend: 'pdf',
+          text: '<i class="ti ti-file-text"></i> PDF',
+          className: 'btn btn-danger btn-sm',
+          exportOptions: {
+            columns: [0, 1, 2, 3]
+          }
+        }, {
+          extend: 'print',
+          text: '<i class="ti ti-printer"></i> Print',
+          className: 'btn btn-info btn-sm',
+          exportOptions: {
+            columns: [0, 1, 2, 3]
+          }
+        }],
+        order: [
+          [3, 'desc']
+        ],
+        pageLength: 10,
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        },
+        columnDefs: [{
+          targets: [-1, -2],
+          orderable: false,
+          searchable: false
+        }],
+        // Mantener los estilos de tu tema
+        classes: {
+          sWrapper: "dataTables_wrapper dt-bootstrap5",
+          sFilterInput: "form-control form-control-sm",
+          sLengthSelect: "form-select form-select-sm",
+          sProcessing: "dataTables_processing card"
+        }
+      });
+
+      // Ajustar los botones al estilo de tu tema
+      $('.dt-buttons .btn').removeClass('btn-secondary').addClass('me-2');
+    });
+
+    function approveUnit(unitId) {
+      Swal.fire({
+        title: '{% translate "Confirm Approval" %}',
+        text: '{% translate "Are you sure you want to approve this residential unit?" %}',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '{% translate "Yes, approve it!" %}',
+        cancelButtonText: '{% translate "Cancel" %}'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Fix: Use the correct URL pattern
+          fetch(`{% url 'residential_units:approve' unit.pk %}`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              },
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                Swal.fire({
+                  title: '{% translate "Approved!" %}',
+                  text: data.message,
+                  icon: 'success',
+                  confirmButtonText: '{% translate "OK" %}'
+                }).then(() => {
+                  window.location.reload();
+                });
+              }
+            })
+            .catch(error => {
+              Swal.fire(
+                '{% translate "Error!" %}',
+                '{% translate "Something went wrong. Please try again." %}',
+                'error'
+              );
+            });
+        }
+      });
+    }
+
+    function rejectUnit(unitId) {
+      Swal.fire({
+        title: '{% translate "Confirm Rejection" %}',
+        text: '{% translate "Are you sure you want to reject this residential unit?" %}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: '{% translate "Yes, reject it!" %}',
+        cancelButtonText: '{% translate "Cancel" %}'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Fix: Use the correct URL pattern
+          fetch(`{% url 'residential_units:reject' unit.pk %}`, {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              },
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                Swal.fire({
+                  title: '{% translate "Rejected!" %}',
+                  text: data.message,
+                  icon: 'error',
+                  confirmButtonText: '{% translate "OK" %}'
+                }).then(() => {
+                  window.location.reload();
+                });
+              }
+            })
+            .catch(error => {
+              Swal.fire(
+                '{% translate "Error!" %}',
+                '{% translate "Something went wrong. Please try again." %}',
+                'error'
+              );
+            });
+        }
+      });
+    }
+
+    function addHouse() {
+      fetch(`{% url 'residential_units:add_house' unit.pk %}?modal=true`)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('houseModalContent').innerHTML = html;
+          new bootstrap.Modal(document.getElementById('houseModal')).show();
+        });
+    }
+
+    function editHouse(houseId) {
+      // Fix: Pass both unit.pk and houseId to the URL template tag
+      fetch(`{% url 'residential_units:edit_house' unit_id=unit.pk house_id=0 %}`.replace('0', houseId) + '?modal=true')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('houseModalContent').innerHTML = html;
+          new bootstrap.Modal(document.getElementById('houseModal')).show();
+        });
+    }
+
+    function deleteHouse(houseId) {
+      // Fix: Pass both unit.pk and houseId to the URL template tag
+      Swal.fire({
+        title: '{% translate "Are you sure?" %}',
+        text: '{% translate "This action cannot be undone!" %}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '{% translate "Yes, delete it!" %}'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`{% url 'residential_units:delete_house' unit_id=unit.pk house_id=0 %}`.replace('0', houseId), {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                Swal.fire(
+                  '{% translate "Deleted!" %}',
+                  data.message,
+                  'success'
+                ).then(() => {
+                  window.location.reload();
+                });
+              }
+            });
+        }
+      });
+    }
+
+    // Add this function to your existing JavaScript
+    function showQRModal(qrUrl, houseNumber) {
+      document.getElementById('qrImage').src = qrUrl;
+      document.getElementById('qrDescription').textContent = `${houseNumber} - {% translate "QR Code" %}`;
+      document.getElementById('downloadQR').href = qrUrl;
+      new bootstrap.Modal(document.getElementById('qrModal')).show();
+    }
+
+    // Form submission handler
+    document.addEventListener('submit', function(e) {
+      if (e.target.id === 'houseForm') {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        fetch(e.target.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success') {
+              bootstrap.Modal.getInstance(document.getElementById('houseModal')).hide();
+              Swal.fire({
+                title: '{% translate "Success!" %}',
+                text: data.message,
+                icon: 'success'
+              }).then(() => {
+                window.location.reload();
+              });
+            }
+          });
+      }
+    });
+
+    function bulkAddHouse() {
+      // Reset form and preview
+      document.getElementById('bulkAddForm').reset();
+      document.getElementById('previewContainer').style.display = 'none';
+      document.getElementById('bulkAddBtn').disabled = true;
+
+      // Show the modal
+      new bootstrap.Modal(document.getElementById('bulkAddModal')).show();
+    }
+
+    // Generate preview of houses/apartments to be created
+    document.getElementById('previewBtn').addEventListener('click', function() {
+      const previewList = document.getElementById('previewList');
+      const previewContainer = document.getElementById('previewContainer');
+      const previewCount = document.getElementById('previewCount');
+      const bulkAddBtn = document.getElementById('bulkAddBtn');
+
+      // Clear previous preview
+      previewList.innerHTML = '';
+
+      let itemsToCreate = [];
+      let propertyType = '{{ unit.property_type }}';
+
+      if (propertyType === 'casa') {
+        // Generate preview for houses
+        const prefix = document.getElementById('house_prefix').value;
+        const start = parseInt(document.getElementById('house_start').value);
+        const count = parseInt(document.getElementById('house_count').value);
+        const separator = document.getElementById('house_separator').value;
+
+        for (let i = 0; i < count; i++) {
+          const houseNumber = `${prefix}${separator}${start + i}`;
+          itemsToCreate.push({
+            number: houseNumber,
+            tower_label: null,
+            floor: null
+          });
+
+          // Add to preview list
+          const li = document.createElement('li');
+          li.textContent = houseNumber;
+          previewList.appendChild(li);
+        }
+      } else {
+        // Generate preview for apartments
+        const towerType = document.getElementById('tower_type').value;
+        const towerPrefix = document.getElementById('tower_prefix').value;
+        const towerStart = parseInt(document.getElementById('tower_start').value);
+        const towerCount = parseInt(document.getElementById('tower_count').value);
+        const towerSeparator = document.getElementById('tower_separator').value;
+        const floorStart = parseInt(document.getElementById('floor_start').value);
+        const floorCount = parseInt(document.getElementById('floor_count').value);
+        const aptsPerFloor = parseInt(document.getElementById('apts_per_floor').value);
+        const aptFormat = document.getElementById('apt_format').value;
+        const aptDigits = parseInt(document.getElementById('apt_digits').value);
+
+        // Generate tower labels
+        for (let t = 0; t < towerCount; t++) {
+          let towerLabel;
+          if (towerType === 'alpha') {
+            // Convert to letter (0 = A, 1 = B, etc.)
+            const letter = String.fromCharCode(65 + (towerStart - 1 + t) % 26);
+            towerLabel = `${towerPrefix}${towerSeparator}${letter}`;
+          } else {
+            towerLabel = `${towerPrefix}${towerSeparator}${towerStart + t}`;
+          }
+
+          // Generate apartments for each floor
+          for (let f = 0; f < floorCount; f++) {
+            const floor = floorStart + f;
+
+            for (let a = 1; a <= aptsPerFloor; a++) {
+              let aptNumber;
+              if (aptFormat === 'floor_unit') {
+                // Format like 101, 102, 201, 202
+                const unitPart = a.toString().padStart(aptDigits, '0');
+                aptNumber = `${floor}${unitPart}`;
+              } else {
+                // Format like 1-01, 1-02, 2-01, 2-02
+                const unitPart = a.toString().padStart(aptDigits, '0');
+                aptNumber = `${floor}-${unitPart}`;
+              }
+
+              itemsToCreate.push({
+                number: aptNumber,
+                tower_label: towerLabel,
+                floor: floor
+              });
+
+              // Add to preview list
+              const li = document.createElement('li');
+              li.textContent = `${towerLabel} - ${aptNumber}`;
+              previewList.appendChild(li);
+            }
+          }
+        }
+      }
+
+      // Show the preview
+      previewContainer.style.display = 'block';
+      previewCount.textContent = itemsToCreate.length;
+
+      // Store the items to create for later use
+      window.itemsToCreate = itemsToCreate;
+
+      // Enable the create button
+      bulkAddBtn.disabled = false;
+    });
+
+    // Handle the bulk creation
+    document.getElementById('bulkAddBtn').addEventListener('click', function() {
+      if (!window.itemsToCreate || window.itemsToCreate.length === 0) {
+        return;
+      }
+
+      const loadingMsg = '{% translate "Creating houses/apartments..." %}';
+      Swal.fire({
+        title: loadingMsg,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      // Send the request to create all items
+      fetch(`{% url 'residential_units:bulk_add_houses' unit.pk %}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+          },
+          body: JSON.stringify({
+            items: window.itemsToCreate
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById('bulkAddModal'));
+          modal.hide();
+
+          if (data.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: '{% translate "Success" %}',
+              text: data.message,
+              confirmButtonText: '{% translate "OK" %}'
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '{% translate "Error" %}',
+              text: data.message,
+              confirmButtonText: '{% translate "OK" %}'
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: '{% translate "Error" %}',
+            text: '{% translate "An unexpected error occurred." %}',
+            confirmButtonText: '{% translate "OK" %}'
+          });
+        });
+    });
+  </script>
+{% endblock extra_js %}
