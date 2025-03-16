@@ -37,19 +37,16 @@ class DashboardView(LoginRequiredMixin, StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         queryset = self.get_queryset()
 
-        # Obtener todas las unidades residenciales según el queryset
         context["total_units"] = queryset.count()
         context["pending_units"] = queryset.filter(status="pending").count()
         context["approved_units"] = queryset.filter(status="approved").count()
         context["rejected_units"] = queryset.filter(status="rejected").count()
 
-        # Agregar contadores de casas y residentes
         context["total_houses"] = sum(unit.houses.count() for unit in queryset)
         context["total_residents"] = sum(
             house.residents.count() for unit in queryset for house in unit.houses.all()
         )
 
-        # Obtener las unidades recientes con sus contadores
         recent_units = queryset.order_by("-created_at")[:10]
         for unit in recent_units:
             unit.total_houses = unit.houses.count()
@@ -323,35 +320,57 @@ def bulk_add_houses(request, unit_id):
             },
         )
 
-    existing_numbers = set(
-        House.objects.filter(residential_unit=unit).values_list("number", flat=True),
+    # Get existing combinations using unique_together fields
+    existing_combinations = set(
+        House.objects.filter(residential_unit=unit).values_list(
+            "tower_label",
+            "number",
+            "floor",
+        ),
     )
+
     duplicates = []
     created_count = 0
 
     for item in items:
         number = item.get("number")
-        if number in existing_numbers:
-            duplicates.append(number)
+        tower_label = item.get("tower_label", "")  # Default to empty string if None
+        floor = item.get("floor")  # Can be None
+
+        # Create tuple for comparison with existing combinations
+        combination = (tower_label, number, floor)
+
+        if combination in existing_combinations:
+            duplicates.append(
+                {
+                    "number": number,
+                    "tower": tower_label,
+                    "floor": floor,
+                },
+            )
             continue
+
         House.objects.create(
             residential_unit=unit,
             number=number,
-            tower_label=item.get("tower_label"),
-            floor=item.get("floor"),
+            tower_label=tower_label,
+            floor=floor,
         )
-        existing_numbers.add(number)
+        existing_combinations.add(combination)
         created_count += 1
 
     if duplicates:
+        duplicate_details = [
+            f"{d['number']} ({d['tower']}, Floor {d['floor']})" for d in duplicates
+        ]
         if created_count > 0:
-            message = _("Created {} houses/apartments. Skipped {} duplicates.").format(
+            message = _("Created {} houses/apartments. Skipped duplicates: {}").format(
                 created_count,
-                len(duplicates),
+                ", ".join(duplicate_details),
             )
         else:
-            message = _("No houses/apartments created. All {} were duplicates.").format(
-                len(duplicates),
+            message = _("No houses/apartments created. All were duplicates: {}").format(
+                ", ".join(duplicate_details),
             )
         return JsonResponse(
             {

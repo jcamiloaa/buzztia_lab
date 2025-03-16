@@ -88,7 +88,6 @@ class ResidentialUnit(TimeStampedModel):
 
 
 class House(TimeStampedModel):
-    # Replace Tower with ResidentialUnit relation
     residential_unit = models.ForeignKey(
         ResidentialUnit,
         related_name="houses",
@@ -110,7 +109,6 @@ class House(TimeStampedModel):
         help_text=_("Optional floor if applicable"),
     )
 
-    # Auto-generated QR field
     qr_token = models.UUIDField(
         _("QR Token"),
         default=uuid.uuid4,
@@ -128,14 +126,13 @@ class House(TimeStampedModel):
         verbose_name = _("House/Apartment")
         verbose_name_plural = _("Houses/Apartments")
         ordering = ["residential_unit", "tower_label", "number"]
-        unique_together = ["residential_unit", "tower_label", "number"]
+        unique_together = ["residential_unit", "tower_label", "number", "floor"]
 
     def __str__(self):
         tower_info = f" - {self.tower_label}" if self.tower_label else ""
         return f"{self.number}{tower_info} - {self.residential_unit.name}"
 
     def generate_qr_code(self):
-        """Generate QR code image with the house token"""
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -149,7 +146,6 @@ class House(TimeStampedModel):
         buffer = BytesIO()
         img.save(buffer)
 
-        # Create a file to save to the ImageField
         filename = f"qr_code_{self.qr_token}.png"
         filebuffer = InMemoryUploadedFile(
             buffer,
