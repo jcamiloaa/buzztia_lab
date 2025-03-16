@@ -167,6 +167,7 @@
                     <th>{% translate "Number" %}</th>
                     <th>{% translate "Tower" %}</th>
                     <th>{% translate "Floor" %}</th>
+                    <th>{% translate "Residents" %}</th>
                     <th>{% translate "Created" %}</th>
                     <th>{% translate "QR Code" %}</th>
                     <th>{% translate "Actions" %}</th>
@@ -178,6 +179,13 @@
                       <td>{{ house.number }}</td>
                       <td>{{ house.tower_label|default:"--" }}</td>
                       <td>{{ house.floor|default:"--" }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-info"
+                                onclick="window.location.href='{% url 'residential_units:manage_residents' house.id %}'">
+                          <i class="ti ti-users"></i>
+                          <span class="badge bg-white text-dark">{{ house.residents.count }}</span>
+                        </button>
+                      </td>
                       <td data-order="{{ house.created_at|date:'Y-m-d H:i' }}">{{ house.created_at|date:"SHORT_DATETIME_FORMAT" }}</td>
                       <td>
                         {% if house.qr_code %}
@@ -196,6 +204,9 @@
                           </button>
                           <button class="btn btn-sm btn-danger" onclick="deleteHouse({{ house.id }})">
                             <i class="ti ti-trash"></i>
+                          </button>
+                          <button class="btn btn-sm btn-info" onclick="linkResident({{ house.id }})">
+                            <i class="ti ti-user-plus"></i>
                           </button>
                         </div>
                       </td>
@@ -490,6 +501,18 @@
       </div>
     </div>
   </div>
+  <!-- Resident Link Modal -->
+  <div class="modal fade"
+       id="residentModal"
+       tabindex="-1"
+       aria-labelledby="residentModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" id="residentModalContent">
+        <!-- Modal content will be loaded here -->
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 {% block extra_css %}
   {{ block.super }}
@@ -726,6 +749,45 @@
             }
           });
       }
+      if (e.target.id === 'residentForm') {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        fetch(e.target.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('residentModal'));
+            modal.hide();
+
+            if (data.status === 'success') {
+              Swal.fire({
+                title: '{% translate "Success!" %}',
+                text: data.message,
+                icon: 'success'
+              }).then(() => {
+                window.location.reload();
+              });
+            } else {
+              Swal.fire({
+                title: '{% translate "Error!" %}',
+                text: data.message,
+                icon: 'error'
+              });
+            }
+          })
+          .catch(error => {
+            Swal.fire({
+              title: '{% translate "Error!" %}',
+              text: '{% translate "An unexpected error occurred." %}',
+              icon: 'error'
+            });
+          });
+      }
     });
 
     function bulkAddHouse() {
@@ -897,5 +959,87 @@
           });
         });
     });
+
+    function linkResident(houseId) {
+      fetch(`{% url 'residential_units:link_resident' house_id=0 %}`.replace('0', houseId) + '?modal=true')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('residentModalContent').innerHTML = html;
+          new bootstrap.Modal(document.getElementById('residentModal')).show();
+        });
+    }
+
+    function showResidents(houseId) {
+      fetch(`{% url 'residential_units:manage_residents' house_id=0 %}`.replace('0', houseId))
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('residentsManagementContent').innerHTML = html;
+          new bootstrap.Modal(document.getElementById('residentsManagementModal')).show();
+        });
+    }
+
+    function updateResident(residentId) {
+      const form = document.getElementById(`residentForm_${residentId}`);
+      const formData = new FormData(form);
+
+      fetch(`{% url 'residential_units:update_resident' resident_id=0 %}`.replace('0', residentId), {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            Swal.fire({
+              icon: 'success',
+              title: '{% translate "Success!" %}',
+              text: data.message
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: '{% translate "Error!" %}',
+              text: data.message
+            });
+          }
+        });
+    }
+
+    function deleteResident(residentId) {
+      Swal.fire({
+        title: '{% translate "Are you sure?" %}',
+        text: '{% translate "This will remove the resident from this house." %}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '{% translate "Yes, remove!" %}'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`{% url 'residential_units:delete_resident' resident_id=0 %}`.replace('0', residentId), {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                Swal.fire({
+                  icon: 'success',
+                  title: '{% translate "Removed!" %}',
+                  text: data.message
+                }).then(() => {
+                  window.location.reload();
+                });
+              }
+            });
+        }
+      });
+    }
   </script>
 {% endblock extra_js %}

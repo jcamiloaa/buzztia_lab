@@ -28,4 +28,24 @@ urlpatterns = [
         views.bulk_add_houses,
         name="bulk_add_houses",
     ),
+    path(
+        "house/<int:house_id>/link-resident/",
+        views.link_resident,
+        name="link_resident",
+    ),
+    path(
+        "house/<int:house_id>/manage-residents/",
+        views.manage_residents,
+        name="manage_residents",
+    ),
+    path(
+        "resident/<int:resident_id>/update/",
+        views.update_resident,
+        name="update_resident",
+    ),
+    path(
+        "resident/<int:resident_id>/delete/",
+        views.delete_resident,
+        name="delete_resident",
+    ),
 ]

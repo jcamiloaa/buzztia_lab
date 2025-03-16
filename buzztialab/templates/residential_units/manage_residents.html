@@ -1,0 +1,298 @@
+{% extends "index-admin.html" %}
+
+{% load static i18n %}
+
+{% block title %}
+  {% translate "Manage Residents" %} - {{ house.number }} | BuzztiaBal
+{% endblock title %}
+{% block breadcrumb %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col">
+          <div class="page-header-title">
+            <h5 class="m-b-10">{% translate "Manage Residents" %}</h5>
+          </div>
+        </div>
+        <div class="col-auto">
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'residential_units:dashboard' %}">{% translate "Residential Units" %}</a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'residential_units:detail' house.residential_unit.id %}">{{ house.residential_unit.name }}</a>
+            </li>
+            <li class="breadcrumb-item" aria-current="page">{{ house.number }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock breadcrumb %}
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row align-items-center">
+            <div class="col">
+              <h5>
+                {{ house.number }}
+                {% if house.tower_label %}- {{ house.tower_label }}{% endif %}
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table id="residentsTable" class="table table-hover display">
+              <thead>
+                <tr>
+                  <th>{% translate "Name" %}</th>
+                  <th>{% translate "Email" %}</th>
+                  <th>{% translate "Type" %}</th>
+                  <th>{% translate "Relationship" %}</th>
+                  <th>{% translate "Status" %}</th>
+                  <th>{% translate "Actions" %}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for resident in house.residents.all %}
+                  <tr data-resident-id="{{ resident.id }}">
+                    <td>{{ resident.user.name }}</td>
+                    <td>{{ resident.user.email }}</td>
+                    <td>
+                      <form id="residentForm_{{ resident.id }}" class="d-inline">
+                        {% csrf_token %}
+                        <div class="form-check">
+                          <input class="form-check-input resident-type"
+                                 type="checkbox"
+                                 name="is_owner"
+                                 id="is_owner_{{ resident.id }}"
+                                 data-resident-id="{{ resident.id }}"
+                                 {% if resident.is_owner %}checked{% endif %} />
+                          <label class="form-check-label" for="is_owner_{{ resident.id }}">{% translate "Owner" %}</label>
+                        </div>
+                      </form>
+                    </td>
+                    <td>
+                      <input type="text"
+                             class="form-control form-control-sm resident-relationship"
+                             value="{{ resident.relationship }}"
+                             data-resident-id="{{ resident.id }}"
+                             {% if resident.is_owner %}disabled{% endif %} />
+                    </td>
+                    <td>
+                      {% if user.is_staff %}
+                        <div class="form-check form-switch">
+                          <input class="form-check-input resident-status"
+                                 type="checkbox"
+                                 name="approved"
+                                 data-resident-id="{{ resident.id }}"
+                                 {% if resident.approved %}checked{% endif %} />
+                          <label class="form-check-label">
+                            <span class="badge {% if resident.approved %}bg-success{% else %}bg-warning{% endif %}">
+                              {% if resident.approved %}
+                                {% translate "Approved" %}
+                              {% else %}
+                                {% translate "Pending" %}
+                              {% endif %}
+                            </span>
+                          </label>
+                        </div>
+                      {% else %}
+                        {% if resident.approved %}
+                          <span class="badge bg-success">{% translate "Approved" %}</span>
+                        {% else %}
+                          <span class="badge bg-warning">{% translate "Pending" %}</span>
+                        {% endif %}
+                      {% endif %}
+                    </td>
+                    <td>
+                      <button type="button"
+                              class="btn btn-danger btn-sm"
+                              onclick="deleteResident({{ resident.id }})">
+                        <i class="ti ti-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="6" class="text-center">{% translate "No residents found" %}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Resident Link Modal -->
+  <div class="modal fade"
+       id="residentModal"
+       tabindex="-1"
+       aria-labelledby="residentModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" id="residentModalContent">
+        <!-- Modal content will be loaded here -->
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+{% block extra_js %}
+  {{ block.super }}
+  {% include "residential_units/residential-includes.html" %}
+  <script>
+    $(document).ready(function() {
+      $('#residentsTable').DataTable({
+        responsive: true,
+        dom: '<"row align-items-center"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>' +
+          '<"row"<"col-sm-12"tr>>' +
+          '<"row align-items-center"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+        buttons: [{
+          extend: 'excel',
+          text: '<i class="ti ti-file-spreadsheet"></i> Excel',
+          className: 'btn btn-success btn-sm',
+          exportOptions: {
+            columns: [0, 1, 2, 3, 4]
+          }
+        }],
+        order: [
+          [0, 'asc']
+        ],
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+        }
+      });
+
+      // Handle resident type change
+      $('.resident-type').on('change', function() {
+        const residentId = $(this).data('resident-id');
+        const isOwner = $(this).prop('checked');
+        const relationshipInput = $(`.resident-relationship[data-resident-id="${residentId}"]`);
+
+        // Disable/enable relationship field
+        relationshipInput.prop('disabled', isOwner);
+        if (isOwner) {
+          relationshipInput.val('');
+        }
+
+        // Save changes
+        updateResident(residentId, {
+          is_owner: isOwner,
+          relationship: relationshipInput.val(),
+          approved: $(`.resident-status[data-resident-id="${residentId}"]`).prop('checked')
+        });
+      });
+
+      // Handle relationship change
+      $('.resident-relationship').on('change', function() {
+        const residentId = $(this).data('resident-id');
+        const isOwner = $(`.resident-type[data-resident-id="${residentId}"]`).prop('checked');
+
+        updateResident(residentId, {
+          is_owner: isOwner,
+          relationship: $(this).val(),
+          approved: $(`.resident-status[data-resident-id="${residentId}"]`).prop('checked')
+        });
+      });
+
+      // Handle status change
+      $('.resident-status').on('change', function() {
+        const residentId = $(this).data('resident-id');
+        const isOwner = $(`.resident-type[data-resident-id="${residentId}"]`).prop('checked');
+        const relationship = $(`.resident-relationship[data-resident-id="${residentId}"]`).val();
+
+        updateResident(residentId, {
+          is_owner: isOwner,
+          relationship: relationship,
+          approved: $(this).prop('checked')
+        });
+      });
+    });
+
+    function updateResident(residentId, data) {
+      const formData = new FormData();
+      formData.append('is_owner', data.is_owner ? 'on' : '');
+      formData.append('relationship', data.relationship);
+      formData.append('approved', data.approved ? 'on' : '');
+
+      fetch(`{% url 'residential_units:update_resident' resident_id=0 %}`.replace('0', residentId), {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Actualizar la interfaz según sea necesario
+            const badge = $(`.resident-status[data-resident-id="${residentId}"]`)
+              .closest('.form-check-label')
+              .find('.badge');
+
+            if (data.approved) {
+              badge.removeClass('bg-warning').addClass('bg-success').text('{% translate "Approved" %}');
+            } else {
+              badge.removeClass('bg-success').addClass('bg-warning').text('{% translate "Pending" %}');
+            }
+
+            // Mostrar notificación de éxito
+            toastr.success(data.message);
+          } else {
+            // Mostrar error
+            toastr.error(data.message);
+          }
+        })
+        .catch(error => {
+          toastr.error('{% translate "An error occurred while updating the resident." %}');
+        });
+    }
+
+    function deleteResident(residentId) {
+      Swal.fire({
+        title: '{% translate "Are you sure?" %}',
+        text: '{% translate "This will remove the resident from this house." %}',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: '{% translate "Yes, remove!" %}',
+        cancelButtonText: '{% translate "Cancel" %}'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(`{% url 'residential_units:delete_resident' resident_id=0 %}`.replace('0', residentId), {
+              method: 'POST',
+              headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status === 'success') {
+                // Eliminar la fila de la tabla
+                $(`#residentsTable tr[data-resident-id="${residentId}"]`).remove();
+
+                // Actualizar la tabla de DataTables
+                $('#residentsTable').DataTable().row(`[data-resident-id="${residentId}"]`).remove().draw();
+
+                // Mostrar mensaje de éxito
+                toastr.success(data.message);
+              } else {
+                toastr.error(data.message);
+              }
+            })
+            .catch(error => {
+              toastr.error('{% translate "An error occurred while deleting the resident." %}');
+            });
+        }
+      });
+    }
+  </script>
+{% endblock extra_js %}

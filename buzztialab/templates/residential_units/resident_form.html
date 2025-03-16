@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<div class="modal-header">
+  <h5 class="modal-title">{% translate "Link Resident to" %} {{ house.number }}</h5>
+  <button type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <form id="residentForm"
+        method="post"
+        action="{% url 'residential_units:link_resident' house.id %}">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="user" class="form-label">{% translate "User" %}*</label>
+      <select class="form-control" id="user" name="user" required>
+        <option value="">{% translate "Select a user" %}</option>
+        {% for user in users %}<option value="{{ user.id }}">{{ user.name }} ({{ user.email }})</option>{% endfor %}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="is_owner" class="form-label">{% translate "Resident Type" %}*</label>
+      <div class="form-check">
+        <input class="form-check-input"
+               type="checkbox"
+               id="is_owner"
+               name="is_owner" />
+        <label class="form-check-label" for="is_owner">{% translate "Is Owner" %}</label>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="relationship" class="form-label">{% translate "Relationship" %}</label>
+      <input type="text"
+             class="form-control"
+             id="relationship"
+             name="relationship"
+             placeholder="{% translate 'e.g. Family member, Tenant' %}" />
+      <div class="form-text">{% translate "Required if not owner" %}</div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% translate "Cancel" %}</button>
+  <button type="submit" form="residentForm" class="btn btn-primary">
+    <i class="ti ti-user-plus"></i> {% translate "Link Resident" %}
+  </button>
+</div>
+<script>
+  // Manage relationship field requirement based on owner status
+  document.getElementById('is_owner').addEventListener('change', function() {
+    const relationshipField = document.getElementById('relationship');
+    relationshipField.required = !this.checked;
+    if (this.checked) {
+      relationshipField.value = '';
+      relationshipField.disabled = true;
+    } else {
+      relationshipField.disabled = false;
+    }
+  });
+</script>

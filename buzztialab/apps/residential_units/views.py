@@ -1,9 +1,12 @@
 import json
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
@@ -17,7 +20,10 @@ from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
 from .models import House
+from .models import Resident
 from .models import ResidentialUnit
+
+User = get_user_model()
 
 
 class StaffRequiredMixin(UserPassesTestMixin):
@@ -386,5 +392,166 @@ def bulk_add_houses(request, unit_id):
             "message": _("Successfully created {} houses/apartments.").format(
                 created_count,
             ),
+        },
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def link_resident(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+
+    if request.method == "POST":
+        user_id = request.POST.get("user")
+        is_owner = request.POST.get("is_owner") == "on"
+        relationship = request.POST.get("relationship")
+
+        if not is_owner and not relationship:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": _(
+                        "Relationship is required when resident is not the owner.",
+                    ),
+                },
+            )
+
+        try:
+            user = User.objects.get(id=user_id)
+            resident = Resident.objects.create(
+                house=house,
+                user=user,
+                is_owner=is_owner,
+                relationship=relationship if not is_owner else "",
+                approved=request.user.is_staff,
+                approved_by=request.user if request.user.is_staff else None,
+            )
+
+            return JsonResponse(
+                {
+                    "status": "success",
+                    "message": _("Resident linked successfully."),
+                    "resident": {
+                        "id": resident.id,
+                        "name": resident.user.name,
+                        "is_owner": resident.is_owner,
+                    },
+                },
+            )
+        except User.DoesNotExist:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": _("Selected user does not exist."),
+                },
+            )
+        except (ValueError, ValidationError) as e:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": str(e),
+                },
+            )
+
+    # Para solicitudes GET, devolver el formulario
+    users = User.objects.filter(is_active=True).exclude(
+        id__in=house.residents.values_list("user_id", flat=True),
+    )
+
+    context = {
+        "house": house,
+        "users": users,
+    }
+
+    if request.GET.get("modal"):
+        return render(request, "residential_units/resident_form.html", context)
+
+    return JsonResponse(
+        {
+            "status": "error",
+            "message": _("Invalid request method."),
+        },
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def manage_residents(request, house_id):
+    house = get_object_or_404(House, id=house_id)
+
+    # Verificar que el usuario tenga acceso a esta unidad residencial
+    if (
+        not request.user.is_superuser
+        and house.residential_unit.created_by != request.user
+    ):
+        raise PermissionDenied
+
+    context = {
+        "house": house,
+    }
+    return render(request, "residential_units/manage_residents.html", context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def update_resident(request, resident_id):
+    if request.method == "POST":
+        resident = get_object_or_404(Resident, id=resident_id)
+        is_owner = request.POST.get("is_owner") == "on"
+        relationship = request.POST.get("relationship", "")
+        approved = request.POST.get("approved") == "on"
+
+        if not is_owner and not relationship:
+            return JsonResponse(
+                {
+                    "status": "error",
+                    "message": _(
+                        "Relationship is required when resident is not the owner.",
+                    ),
+                },
+            )
+
+        resident.is_owner = is_owner
+        resident.relationship = relationship if not is_owner else ""
+
+        if request.user.is_staff and resident.approved != approved:
+            resident.approved = approved
+            resident.approved_by = request.user if approved else None
+
+        resident.save()
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": _("Resident updated successfully."),
+            },
+        )
+
+    return JsonResponse(
+        {
+            "status": "error",
+            "message": _("Invalid request method."),
+        },
+    )
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def delete_resident(request, resident_id):
+    if request.method == "POST":
+        resident = get_object_or_404(Resident, id=resident_id)
+        resident.delete()
+
+        return JsonResponse(
+            {
+                "status": "success",
+                "message": _("Resident removed successfully."),
+            },
+        )
+
+    return JsonResponse(
+        {
+            "status": "error",
+            "message": _("Invalid request method."),
         },
     )
