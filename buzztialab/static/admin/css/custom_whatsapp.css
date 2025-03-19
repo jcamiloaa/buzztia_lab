@@ -1,0 +1,10 @@
+.field-get_formatted_data pre {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 4px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 500px;
+    overflow-y: auto;
+    font-family: monospace;
+}

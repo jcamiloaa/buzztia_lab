@@ -12,3 +12,13 @@ REDIS_URL=redis://redis:6379/0
 # Flower
 CELERY_FLOWER_USER=buzztia_user_flower
 CELERY_FLOWER_PASSWORD=Q7h!2s5L9@ptQa
+
+
+# WhatsApp API Business
+# ------------------------------------------------------------------------------
+WHATSAPP_VERIFY_TOKEN = "Aa27851571102808245"
+WHATSAPP_ACCESS_TOKEN = "EAALpV2B4O7cBO5lExfCNUPkVyXn38MHzRC2bORmHYx6nHmNfGqMS0xuZAGSmCl6Nqrs03SKHX9pKdjBnMJj5jneXJHfw4YnLhW02LfJTnuzGinAgAKIPe0ZCZBVZCjeIMWn43mqBT6M9ZBKuinx8DVnDwABYiW8MP36JYwah6CU3kRyd94pjqPT8mQW2eRvasmK0yjkNtyTGbprDX"
+WHATSAPP_PHONE_NUMBER_ID = "246463351887927"
+
+
+NGROK_SERVER = "ebe6-8-243-167-190.ngrok-free.app"

@@ -79,6 +79,7 @@ THIRD_PARTY_APPS = [
     "allauth.mfa",
     "allauth.socialaccount",
     "django_celery_beat",
+    "django_celery_results",  # Add this line
     "rest_framework",
     "rest_framework.authtoken",
     "corsheaders",
@@ -89,6 +90,7 @@ LOCAL_APPS = [
     "buzztialab.users",
     "buzztialab.apps.wallet",
     "buzztialab.apps.residential_units",
+    "buzztialab.apps.whatsapp",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -358,9 +360,16 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX": "/api/",
 }
 
+# WhatsApp API Business Settings
+# ------------------------------------------------------------------------------
+WHATSAPP_VERIFY_TOKEN = env("WHATSAPP_VERIFY_TOKEN")
+WHATSAPP_ACCESS_TOKEN = env("WHATSAPP_ACCESS_TOKEN")
+WHATSAPP_PHONE_NUMBER_ID = env("WHATSAPP_PHONE_NUMBER_ID")
 
 # Tu configuración existente de allauth
 ACCOUNT_LOGIN_REDIRECT_URL = "dashboard"
 LOGIN_REDIRECT_URL = "dashboard"
 # Your stuff...
 # ------------------------------------------------------------------------------
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "django-cache"

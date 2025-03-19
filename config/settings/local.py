@@ -14,7 +14,14 @@ SECRET_KEY = env(
     default="rYzRPdq0mfVefaMIZEV9eFrETad4mTizfUStSWKc5vzTQ5Bk4hYii5XQx56sPmxr",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1"]  # noqa: S104
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
+
+# Add NGROK server to ALLOWED_HOSTS if defined in environment
+if env.str("NGROK_SERVER", default=None):
+    ALLOWED_HOSTS.append(env.str("NGROK_SERVER"))
 
 # CACHES
 # ------------------------------------------------------------------------------

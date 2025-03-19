@@ -57,6 +57,7 @@ urlpatterns = [
             "buzztialab.apps.residential_units.urls", namespace="residential_units"
         ),
     ),
+    path("whatsapp/", include("buzztialab.apps.whatsapp.urls", namespace="whatsapp")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files
